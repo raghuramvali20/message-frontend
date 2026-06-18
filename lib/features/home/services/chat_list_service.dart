@@ -1,28 +1,24 @@
-import 'dart:convert';
-
-import 'package:message/core/services/api.dart';
 import 'package:message/core/models/api_response.dart';
-import 'package:message/core/models/user_model.dart';
-import 'package:message/core/storage_services/hive_db.dart';
-import 'package:message/core/storage_services/secure_storage_service.dart';
 import 'package:message/features/home/models/chat_list_model.dart';
 
-class ChatListService{
-  Future<ApiResponse<List<ChatList>>> getChatsByUserId() async {
-    String? token = await StorageService().loadJwt();
-    if(token == "" || token == null){
-      return Failure("Authentication failed");
+class ChatListService {
+    Future<ApiResponse<List<ChatModel>>> fetchChats(String userId) async{
+        await Future.delayed(Duration(milliseconds: 200));
+        if(userId == "userId"){
+            return SuccessResponse(
+                List.of([
+                     ChatModel("chatId1", "chatUser2", "https://i.pinimg.com/236x/b4/07/9b/b4079bd8f8b8b1272f4c66f420a5fe07.jpg", "chatUserId1", "hello", DateTime.now()),
+                     ChatModel("chatId2", "chatUser3", "https://i.pinimg.com/236x/b4/07/9b/b4079bd8f8b8b1272f4c66f420a5fe07.jpg", "chatUserId2", "hello", DateTime.now()),
+                     ChatModel("chatId3", "chatUser4", "https://i.pinimg.com/236x/b4/07/9b/b4079bd8f8b8b1272f4c66f420a5fe07.jpg", "chatUserId3", "hello", DateTime.now()),
+                     ChatModel("chatId4", "chatUser5", "https://i.pinimg.com/236x/b4/07/9b/b4079bd8f8b8b1272f4c66f420a5fe07.jpg", "chatUserId4", "hello", DateTime.now()),
+                     ChatModel("chatId5", "chatUser6", "https://i.pinimg.com/236x/b4/07/9b/b4079bd8f8b8b1272f4c66f420a5fe07.jpg", "chatUserId5", "hello", DateTime.now()),
+                     ChatModel("chatId6", "chatUser7", "https://i.pinimg.com/236x/b4/07/9b/b4079bd8f8b8b1272f4c66f420a5fe07.jpg", "chatUserId6", "hello", DateTime.now()),
+                     ChatModel("chatId7", "chatUser8", "https://i.pinimg.com/236x/b4/07/9b/b4079bd8f8b8b1272f4c66f420a5fe07.jpg", "chatUserId7", "hello", DateTime.now()),
+                     ChatModel("chatId8", "chatUser9", "https://i.pinimg.com/236x/b4/07/9b/b4079bd8f8b8b1272f4c66f420a5fe07.jpg", "chatUserId8", "hello", DateTime.now()),
+                ])
+            );
+        }else {
+            return FailureResponse("No chats");
+        }
     }
-    User? user = await HiveDB().getUserData();
-    if(user != null && user.id != ""){
-      final response  = await Api.get("/chats/by-user/${user.id}", headers: {"Authorization" : "Bearer $token"});
-      Map<String, dynamic> data = jsonDecode(response.body);
-      if(!data['chatList'].isEmpty){
-        List<ChatList> chatLists = (data["chatList"] as List).map((chatListItem) => ChatList.fromJson(chatListItem)).toList();
-        return Success<List<ChatList>>(chatLists, data["message"]);
-      }
-      return Success([], data["message"] ?? "No chats");
-      }
-      return Failure("No user data available to search");
-  }
 }

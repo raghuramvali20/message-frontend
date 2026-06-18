@@ -1,17 +1,22 @@
-class ChatList {
+class ChatModel {
   String chatId;
-  String userName;
+  String chatUserName;
   String profilePic;
-  String receiverId;
+  String chatUserId;
+  String previewChat;
+  DateTime time;
 
-  ChatList(this.chatId, this.userName, this.profilePic, this.receiverId);
 
-  factory ChatList.fromJson(Map<String, dynamic> json) {
-    return ChatList(
+  ChatModel(this.chatId, this.chatUserName, this.profilePic, this.chatUserId, this.previewChat, this.time);
+
+  factory ChatModel.fromJson(Map<String, dynamic> json) {
+    return ChatModel(
       json["id"] ?? json["_id"] ?? " ",
-      json["userName"] ?? " ",
+      json["chatUserName"] ?? " ",
       json["profilePic"] ?? " ",
-      json["receiverId"] ?? json["_id"] ?? " "
+      json["chatUserId"] ?? json["_id"] ?? " ",
+      json["previewChat"] ?? " ",
+      json["time"] ?? DateTime.now()
      );
   }
 }

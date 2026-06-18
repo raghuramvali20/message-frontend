@@ -18,7 +18,6 @@ class AuthController with ChangeNotifier{
     User? get user => _user;
     String? get error => _error;
     bool get loading => _loading;
-    String? get token => _token;
 
     Future<void> login(String email, String password) async{
         _loading = true;
@@ -31,6 +30,7 @@ class AuthController with ChangeNotifier{
             _user = response.data;
             _token = response.extras?["token"];
             await _userStorage.saveUser(_user!);
+            await _userStorage.setAuthenticated(true);
             await _secureStorage.saveToken(_token!);
 
         }else if(response is FailureResponse<User>){
@@ -50,6 +50,11 @@ class AuthController with ChangeNotifier{
 
         if(response is SuccessResponse<User>){
             _user = response.data;
+            _token = response.extras?["token"];
+            await _userStorage.saveUser(_user!);
+            await _userStorage.setAuthenticated(true);
+            await _secureStorage.saveToken(_token!);
+            
         }else if(response is FailureResponse<User>){
             _error = response.serverMessage;
         }

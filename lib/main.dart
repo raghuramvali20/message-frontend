@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:message/features/auth/screens/splash_screen.dart';
 import 'package:message/core/storage_services/app_storage_services.dart';
 import 'package:message/core/theme/app_theme.dart';
 import 'package:message/core/constants/app_constants.dart';
@@ -8,8 +9,10 @@ import 'package:message/features/auth/screens/get_started_screen.dart';
 import 'package:message/features/auth/screens/login_screen.dart';
 import 'package:message/features/auth/screens/register_screen.dart';
 import 'package:message/features/auth/services/auth_services.dart';
+import 'package:message/features/home/controllers/chat_list_controller.dart';
 import 'package:message/features/home/screens/home_screen.dart';
 import 'package:message/features/chat/screens/chat_screen.dart';
+import 'package:message/features/home/services/chat_list_service.dart';
 import 'package:message/features/profile/screens/profile_screen.dart';
 import 'package:message/features/settings/screens/settings_screen.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +22,7 @@ void main() async {
   await Hive.initFlutter();
 
   final authServices =  AuthServices();
+  final chatListServices = ChatListService();
   final appStorage = AppStorageService();
 
 
@@ -26,9 +30,13 @@ void main() async {
     MultiProvider(
         providers: [
            ChangeNotifierProvider(
-            create: (_) => AuthController(authServices, appStorage, appStorage),
+            create: (_) => AuthController(authServices, appStorage, appStorage)
+            ),
+            ChangeNotifierProvider(
+                create: (_) => ChatListController(chatListServices, appStorage)
             )
-        ]
+        ],
+        child: (MyApp()),
     )
   );
 }
@@ -42,17 +50,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Message',
       theme: AppTheme.lightTheme,
-      initialRoute: 1 != 1 
-          ? AppConstants.routeHome
-          : AppConstants.routeGetStarted,
+      initialRoute: SplashScreen.routeName,
       routes: {
         AppConstants.routeGetStarted: (context) => const GetStartedScreen(),
         AppConstants.routeLogin: (context) => const LoginScreen(),
         AppConstants.routeRegister: (context) => const RegisterScreen(),
         AppConstants.routeHome: (context) => const HomeScreen(),
-        AppConstants.routeChat: (context) => const ChatScreen(),
-        AppConstants.routeProfile: (context) => const ProfileScreen(),
-        AppConstants.routeSettings: (context) => const SettingsScreen(),
+        SplashScreen.routeName: (context) => const SplashScreen(),
+        // AppConstants.routeChat: (context) => const ChatScreen(),
+        // AppConstants.routeProfile: (context) => const ProfileScreen(),
+        // AppConstants.routeSettings: (context) => const SettingsScreen(),
       },
     );
   }

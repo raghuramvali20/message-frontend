@@ -60,6 +60,21 @@ class AppStorageService implements SecureStorageService, UserStorageService, The
     await box.delete('user');
   }
 
+    @override
+  Future<void> setAuthenticated(bool isAuthenticated) async{
+    final box = await Hive.openBox('authentication');
+    await box.put("authenticated", isAuthenticated);
+  }
+
+  @override
+  Future<bool> isAuthenticated() async{
+    final box = await Hive.openBox("authentication");
+    final result = await box.get("authenticated");
+    if(result != null) return result;
+    return false;
+
+  }
+
   @override
   Future<void> saveTheme(bool isDark) async {
     final themeData = await SharedPreferences.getInstance();

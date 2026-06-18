@@ -4,6 +4,8 @@ abstract class UserStorageService {
     Future<void> saveUser(User user);
     Future<User?> loadUser();
     Future<void> clearUser();
+    Future<void> setAuthenticated(bool isAuthenticated);
+    Future<bool> isAuthenticated();
 }
 
 abstract class SecureStorageService {
