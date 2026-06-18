@@ -1,11 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:message/core/widgets/snack_bar_helper.dart';
 import 'package:message/features/auth/controllers/auth_controller.dart';
-import 'package:message/core/storage_services/hive_db.dart';
-import 'package:message/features/auth/models/view_model.dart';
 import 'package:message/features/home/screens/home_screen.dart';
 import 'package:message/features/auth/screens/login_screen.dart';
 import 'package:message/features/auth/widgets/auth_screen_widgets.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const String routeName = "register-screen"; // Use AppConstants.routeRegister
@@ -33,7 +33,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String emailMessage = "";
   String passwordMessage = "";
   bool isInvisible = true;
-  bool isLoading = false;
 
   final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
   final userNameRegex = RegExp(r'^[a-zA-Z0-9._]+$');
@@ -68,49 +67,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
         tempEmailMessage.isNotEmpty)
       return;
 
-    setState(() {
-      isLoading = true;
-    });
-
     try {
-      final ViewModel result = await AuthController().register(userName, email, password);
+      final authController = context.read<AuthController>();
+      await authController.register(userName, email, password);
       if (!mounted) return;
-      if (result.success && result.user != null) {
-        await HiveDB().setUserData(result.user!);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.message), // Backend: "User authorized"
-            backgroundColor: Color.fromRGBO(24, 119, 246, 1),
-          ),
-        );
-
+      if (authController.user != null) {
         Navigator.pushNamedAndRemoveUntil(
           context,
           HomeScreen.routeName,
           (route) => false,
         );
-      } else {
+      } else if(authController.error != null){
         // Show exact backend error: "Unauthorized, password is incorrect" etc
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.message), // Backend message
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarHelper.showError(context, authController.error!);
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
-      );
-    } finally {
-      if (mounted) setState(() => isLoading = false);
-    }
+     SnackBarHelper.showError(context, "Error $e");
+    } 
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final auth = context.watch<AuthController>();
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Register"),
@@ -164,7 +145,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   SizedBox(height: 25),
                   AuthScreenWidgets().buildSubmitButton(
                     "Sign Up",
-                    isLoading,
+                    auth.loading,
                     _handleSignUp,
                   ),
                   SizedBox(height: 25),

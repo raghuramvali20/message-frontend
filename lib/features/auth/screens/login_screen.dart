@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:message/core/widgets/snack_bar_helper.dart';
 import 'package:message/features/auth/controllers/auth_controller.dart';
 import 'package:message/features/home/screens/home_screen.dart';
 import 'package:message/features/auth/screens/register_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:message/features/auth/widgets/auth_screen_widgets.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = "login-screen"; // Use AppConstants.routeLogin
@@ -16,11 +18,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  
 
   String emailMessage = "";
   String passwordMessage = "";
-  bool isLoading = false;
   bool isInvisible= true;
 
   @override
@@ -52,46 +52,34 @@ class _LoginScreenState extends State<LoginScreen> {
     if (tempEmailMsg.isNotEmpty || tempPassMsg.isNotEmpty) return;
 
     // 2. Call API
-    setState(() => isLoading = true);
     try {
-      final data = await AuthController().login(email, password);
+      final authController = context.read<AuthController>();
+      await authController.login(email, password);
       if (!mounted) return;
 
       // 3. Only save if success == true AND user exists
-      if (data.success && data.user != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(data.message), // Backend: "User authorized"
-            backgroundColor: Color.fromRGBO(24, 119, 246, 1),
-          ),
-        );
-
+      if (authController.user != null) {
         Navigator.pushNamedAndRemoveUntil(
           context,
           HomeScreen.routeName,
           (route) => false,
         );
-      } else {
-        // Show exact backend error: "Unauthorized, password is incorrect" etc
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(data.message), // Backend message
-            backgroundColor: Colors.red,
-          ),
-        );
+      } else if(authController.error != null){
+        SnackBarHelper.showError(context, authController.error!);
       }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
       );
-    } finally {
-      if (mounted) setState(() => isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final auth = context.watch<AuthController>();
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -137,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   ),
                   const SizedBox(height: 25),
-                  AuthScreenWidgets().buildSubmitButton("Login", isLoading, _handleLogin),
+                  AuthScreenWidgets().buildSubmitButton("Login", auth.loading, _handleLogin),
 
                   const SizedBox(height: 25,),
 
