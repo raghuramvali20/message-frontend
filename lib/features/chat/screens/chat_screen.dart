@@ -19,15 +19,28 @@ class _ChatScreenState extends State<ChatScreen> {
     final args = ModalRoute.of(context)!.settings.arguments as ChatArguments;
     
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(args.chatUserName),
-      ),
-      body: Column(
-        children: [
-            BuildMessages(chatId: args.chatId),
-            BuildSendMessage()
-        ],
+    return SafeArea(
+        top: false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CircleAvatar(
+              radius: 24,
+              backgroundImage: NetworkImage(args.profilePic),
+            ),
+            SizedBox(width: 24),
+              Text(args.chatUserName),
+            ],
+          ),
+        ),
+        body: Column(
+          children: [
+              BuildMessages(chatId: args.chatId),
+              BuildSendMessage(chatId: args.chatId, receiverId: args.chatUserId,)
+          ],
+        ),
       ),
     );
   }

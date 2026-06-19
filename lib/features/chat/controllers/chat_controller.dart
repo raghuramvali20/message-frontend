@@ -41,4 +41,10 @@ class ChatController with ChangeNotifier {
         notifyListeners();
     }
 
+    Future<void> sendMessage(String messageText, String chatId, String receiverId)async{
+        MessageModel message = MessageModel(chatId: chatId, senderId: user!.id, receiverId: receiverId, messageText: messageText, time: "12/3/12");
+        messages!.add(message);
+        notifyListeners();
+    }
+
 }

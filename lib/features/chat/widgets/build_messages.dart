@@ -52,6 +52,9 @@ class _BuildMessagesState extends State<BuildMessages> {
           color: Colors.blueAccent,
           borderRadius: BorderRadius.circular(8),
         ),
+         constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.7,
+        ),
         child: Text(
           message.messageText,
           style: const TextStyle(color: Colors.white),
