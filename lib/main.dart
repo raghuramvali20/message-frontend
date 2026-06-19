@@ -9,6 +9,8 @@ import 'package:message/features/auth/screens/get_started_screen.dart';
 import 'package:message/features/auth/screens/login_screen.dart';
 import 'package:message/features/auth/screens/register_screen.dart';
 import 'package:message/features/auth/services/auth_services.dart';
+import 'package:message/features/chat/controllers/chat_controller.dart';
+import 'package:message/features/chat/services/chat_services.dart';
 import 'package:message/features/home/controllers/chat_list_controller.dart';
 import 'package:message/features/home/screens/home_screen.dart';
 import 'package:message/features/chat/screens/chat_screen.dart';
@@ -23,6 +25,7 @@ void main() async {
 
   final authServices =  AuthServices();
   final chatListServices = ChatListService();
+  final chatServices = ChatServices();
   final appStorage = AppStorageService();
 
 
@@ -34,6 +37,9 @@ void main() async {
             ),
             ChangeNotifierProvider(
                 create: (_) => ChatListController(chatListServices, appStorage)
+            ),
+            ChangeNotifierProvider(
+                create: (_) => ChatController(chatServices, appStorage)
             )
         ],
         child: (MyApp()),
@@ -57,7 +63,7 @@ class MyApp extends StatelessWidget {
         AppConstants.routeRegister: (context) => const RegisterScreen(),
         AppConstants.routeHome: (context) => const HomeScreen(),
         SplashScreen.routeName: (context) => const SplashScreen(),
-        // AppConstants.routeChat: (context) => const ChatScreen(),
+        AppConstants.routeChat: (context) => const ChatScreen(),
         // AppConstants.routeProfile: (context) => const ProfileScreen(),
         // AppConstants.routeSettings: (context) => const SettingsScreen(),
       },

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:message/core/widgets/snack_bar_helper.dart';
+import 'package:message/features/chat/models/chat_arguments.dart';
+import 'package:message/features/chat/screens/chat_screen.dart';
 import 'package:message/features/home/controllers/chat_list_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +16,6 @@ class _ChatBuilderState extends State<ChatBuilder> {
 
     @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future.microtask((){
         context.read<ChatListController>().fetchChats();
@@ -55,6 +56,11 @@ Widget build(BuildContext context) {
           ),
           onTap: () {
             debugPrint("Open chat with ${chat.chatUserName}");
+            Navigator.pushNamed(
+                context, 
+                ChatScreen.routeName,
+                arguments: ChatArguments(chat.chatId, chat.chatUserId, chat.chatUserName, chat.profilePic)
+                );
           },
         );
       },
