@@ -6,6 +6,8 @@ class MessageModel {
   String time;
   StatusCode statusCode; // ✅ No longer hardcoded
   bool edited; // ✅ No longer hardcoded
+  String? formattedTime;
+  String? formattedDate;
 
   MessageModel({
     required this.chatId,
@@ -15,6 +17,8 @@ class MessageModel {
     required this.time,
     this.statusCode = StatusCode.delivered, // ✅ Default value
     this.edited = false, // ✅ Default value
+    this.formattedTime,
+    this.formattedDate
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
@@ -23,7 +27,7 @@ class MessageModel {
       senderId: json["senderId"],
       receiverId: json["receiverId"],
       messageText: json["messageText"],
-      time: json["time"].toString(),
+      time: json["time"],
       statusCode: _statusFromString(
         json["status"] ?? "delivered",
       ), // ✅ Parse from backend

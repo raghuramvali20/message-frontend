@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:message/core/theme/app_theme.dart';
 import 'package:message/features/chat/models/chat_arguments.dart';
 import 'package:message/features/chat/widgets/build_messages.dart';
 import 'package:message/features/chat/widgets/build_send_message.dart';
@@ -23,6 +24,7 @@ class _ChatScreenState extends State<ChatScreen> {
         top: false,
       child: Scaffold(
         appBar: AppBar(
+            shadowColor: Colors.black,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -31,7 +33,16 @@ class _ChatScreenState extends State<ChatScreen> {
               backgroundImage: NetworkImage(args.profilePic),
             ),
             SizedBox(width: 24),
-              Text(args.chatUserName),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(args.chatUserName),
+                  Text(
+                    "Online", //user status. 
+                    style: AppTypography.bodySm,
+                  )
+                ],
+              ),
             ],
           ),
         ),

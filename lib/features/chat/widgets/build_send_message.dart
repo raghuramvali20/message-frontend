@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:message/core/theme/app_theme.dart';
 import 'package:message/features/chat/controllers/chat_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -19,16 +20,6 @@ class _BuildSendMessageState extends State<BuildSendMessage> {
   Widget build(BuildContext context) {
     final _chatController = context.watch<ChatController>();
 
-    void sendMessage() {
-      _chatController.sendMessage(
-        _controller.text,
-        widget.chatId,
-        widget.receiverId,
-      );
-      print("Message: ${_controller.text}");
-      _controller.clear();
-    }
-
     return Container(
       padding: const EdgeInsets.all(8),
       child: Row(
@@ -36,7 +27,6 @@ class _BuildSendMessageState extends State<BuildSendMessage> {
           Expanded(
             child: TextField(
               controller: _controller,
-              onSubmitted: (_) => sendMessage(),
               decoration: InputDecoration(
                 hintText: "Type a message...",
                 border: OutlineInputBorder(
@@ -47,7 +37,25 @@ class _BuildSendMessageState extends State<BuildSendMessage> {
             ),
           ),
           const SizedBox(width: 8),
-          IconButton(icon: const Icon(Icons.send), onPressed: sendMessage),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              backgroundColor: AppColors.primary,
+              child: IconButton(
+                color: AppColors.background,
+                icon: const Icon(Icons.send),
+                onPressed: () {
+                  _chatController.sendMessage(
+                    _controller.text,
+                    widget.chatId,
+                    widget.receiverId,
+                  );
+                  print("Message: ${_controller.text}");
+                  _controller.clear();
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -4,47 +4,69 @@ import 'package:message/core/models/user_model.dart';
 import 'package:message/core/storage_services/storage_services.dart';
 import 'package:message/features/chat/models/message_model.dart';
 import 'package:message/features/chat/services/chat_services.dart';
+import 'package:message/features/chat/services/date_time_managing_service.dart';
 
 class ChatController with ChangeNotifier {
-    final ChatServices _services;
-    final UserStorageService _userStorage;
-    ChatController(this._services, this._userStorage);
+  final ChatServices _services;
+  final UserStorageService _userStorage;
 
-    String? _error;
-    User? _user;
-    List<MessageModel>? _messages;
-    bool _loading = false;
-    
+  ChatController(this._services, this._userStorage);
 
-    String? get error => _error;
-    User? get user => _user;
-    List<MessageModel>? get messages => _messages;
-    bool get loading => _loading;
+  String? _error;
+  User? _user;
+  List<MessageModel>? _messages;
+  bool _loading = false;
 
+  String? get error => _error;
+  User? get user => _user;
+  List<MessageModel>? get messages => _messages;
+  bool get loading => _loading;
 
-    Future<void> fetchMessages(String chatId) async {
-        _loading = true;
-        _error = null;
-        notifyListeners();
+  Future<void> fetchMessages(String chatId) async {
+    _loading = true;
+    _error = null;
+    notifyListeners();
 
-        _user = await _userStorage.loadUser();
+    _user = await _userStorage.loadUser();
 
-        final response = await _services.getChatsByChatId(chatId);
-        
-        if(response is SuccessResponse<List<MessageModel>>){
-            _messages = response.data;
-        }else if(response is FailureResponse<List<MessageModel>>){
-            _error =  response.serverMessage;
-        }
+    final response = await _services.getChatsByChatId(chatId);
 
-        _loading = false;
-        notifyListeners();
+    if (response is SuccessResponse<List<MessageModel>>) {
+      _messages = response.data.map((msg) {
+        // create service with timestamp string
+        final timeAndDate = DateTimeManagingService(msg.time).convertTimeAndDate();
+        msg.formattedTime = timeAndDate.time;
+        msg.formattedDate = timeAndDate.date;
+        return msg;
+      }).toList();
+    } else if (response is FailureResponse<List<MessageModel>>) {
+      _error = response.serverMessage;
     }
 
-    Future<void> sendMessage(String messageText, String chatId, String receiverId)async{
-        MessageModel message = MessageModel(chatId: chatId, senderId: user!.id, receiverId: receiverId, messageText: messageText, time: "12/3/12");
-        messages!.add(message);
-        notifyListeners();
-    }
+    _loading = false;
+    notifyListeners();
+  }
 
+  Future<void> sendMessage(
+    String messageText,
+    String chatId,
+    String receiverId,
+  ) async {
+    final nowIso = DateTime.now().toUtc().toIso8601String();
+    MessageModel message = MessageModel(
+      chatId: chatId,
+      senderId: user!.id,
+      receiverId: receiverId,
+      messageText: messageText,
+      time: nowIso,
+    );
+
+    // enrich with formatted values
+    final timeAndDate = DateTimeManagingService(message.time).convertTimeAndDate();
+    message.formattedTime = timeAndDate.time;
+    message.formattedDate = timeAndDate.date;
+
+    messages!.add(message);
+    notifyListeners();
+  }
 }

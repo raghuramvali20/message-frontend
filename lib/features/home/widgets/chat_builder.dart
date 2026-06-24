@@ -14,6 +14,7 @@ class ChatBuilder extends StatefulWidget {
 
 class _ChatBuilderState extends State<ChatBuilder> {
 
+
     @override
   void initState() {
     super.initState();
@@ -43,25 +44,28 @@ Widget build(BuildContext context) {
       itemCount: chats.chatList!.length,
       itemBuilder: (context, index) {
         final chat = chats.chatList![index];
-        return ListTile(
-          leading: CircleAvatar(
-            radius: 24,
-            backgroundImage: NetworkImage(chat.profilePic),
+        return InkWell(
+            onTap: () {
+              debugPrint("Open chat with ${chat.chatUserName}");
+              Navigator.pushNamed(
+                  context, 
+                  ChatScreen.routeName,
+                  arguments: ChatArguments(chat.chatId, chat.chatUserId, chat.chatUserName, chat.profilePic)
+                  );
+            },
+          child: ListTile(
+            leading: CircleAvatar(
+              radius: 24,
+              backgroundImage: NetworkImage(chat.profilePic),
+            ),
+            title: Text(chat.chatUserName, style: const TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text(chat.previewChat),
+            trailing: Text(
+              chat.time.toString(),
+              style: const TextStyle(color: Colors.grey, fontSize: 12),
+            ),
+            
           ),
-          title: Text(chat.chatUserName, style: const TextStyle(fontWeight: FontWeight.bold)),
-          subtitle: Text(chat.previewChat),
-          trailing: Text(
-            chat.time.toString(),
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
-          ),
-          onTap: () {
-            debugPrint("Open chat with ${chat.chatUserName}");
-            Navigator.pushNamed(
-                context, 
-                ChatScreen.routeName,
-                arguments: ChatArguments(chat.chatId, chat.chatUserId, chat.chatUserName, chat.profilePic)
-                );
-          },
         );
       },
     ),

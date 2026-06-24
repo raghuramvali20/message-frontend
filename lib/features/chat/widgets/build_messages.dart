@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:message/core/theme/app_theme.dart';
 import 'package:message/features/chat/controllers/chat_controller.dart';
 import 'package:message/features/chat/models/message_model.dart';
 import 'package:provider/provider.dart';
@@ -33,12 +34,6 @@ class _BuildMessagesState extends State<BuildMessages> {
       _scrollController.jumpTo(
         _scrollController.position.maxScrollExtent,
       );
-      // Or animate smoothly:
-      // _scrollController.animateTo(
-      //   _scrollController.position.maxScrollExtent,
-      //   duration: const Duration(milliseconds: 300),
-      //   curve: Curves.easeOut,
-      // );
     }
   }
 
@@ -52,12 +47,22 @@ class _BuildMessagesState extends State<BuildMessages> {
           color: Colors.blueAccent,
           borderRadius: BorderRadius.circular(8),
         ),
-         constraints: BoxConstraints(
+        constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.7,
         ),
-        child: Text(
-          message.messageText,
-          style: const TextStyle(color: Colors.white),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(message.messageText, style: AppTypography.bodyLg),
+            SizedBox(height: 4),
+            Text(
+              message.formattedTime ?? "",
+              style: AppTypography.bodySm.copyWith(
+                fontSize: 12,
+                color: Colors.white70,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -76,9 +81,36 @@ class _BuildMessagesState extends State<BuildMessages> {
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.7,
         ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(message.messageText, style: AppTypography.bodyLg),
+            SizedBox(height: 4),
+            Text(
+              message.formattedTime ?? "",
+              style: AppTypography.bodySm.copyWith(
+                fontSize: 12,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateSeparator(String date) {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade300,
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: Text(
-          message.messageText,
-          style: const TextStyle(color: Colors.black87),
+          date,
+          style: AppTypography.bodySm,
         ),
       ),
     );
@@ -99,9 +131,21 @@ class _BuildMessagesState extends State<BuildMessages> {
           final message = payload.messages![index];
           final isSentByMe = payload.user?.id == message.senderId;
 
-          return isSentByMe
-              ? _buildSentMessage(message)
-              : _buildReceivedMessage(message);
+          // Insert date separator when date changes
+          final showDateSeparator = index == 0 ||
+              message.formattedDate !=
+                  payload.messages![index - 1].formattedDate;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (showDateSeparator && message.formattedDate != null)
+                _buildDateSeparator(message.formattedDate!),
+              isSentByMe
+                  ? _buildSentMessage(message)
+                  : _buildReceivedMessage(message),
+            ],
+          );
         },
       ),
     );

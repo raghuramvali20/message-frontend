@@ -16,11 +16,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+            shadowColor: Colors.black,
             title: Text(
                 "Message",
                 style: AppTypography.headlineXl
             ),
         ),
+        drawer: Drawer(),
         body: Column(
             children: [
                 SearchBarBuilder(),

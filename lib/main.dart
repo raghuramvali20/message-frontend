@@ -11,6 +11,7 @@ import 'package:message/features/auth/screens/register_screen.dart';
 import 'package:message/features/auth/services/auth_services.dart';
 import 'package:message/features/chat/controllers/chat_controller.dart';
 import 'package:message/features/chat/services/chat_services.dart';
+import 'package:message/features/chat/services/date_time_managing_service.dart';
 import 'package:message/features/home/controllers/chat_list_controller.dart';
 import 'package:message/features/home/screens/home_screen.dart';
 import 'package:message/features/chat/screens/chat_screen.dart';
@@ -26,7 +27,7 @@ void main() async {
   final authServices =  AuthServices();
   final chatListServices = ChatListService();
   final chatServices = ChatServices();
-  final appStorage = AppStorageService();
+  final appStorage = AppStorageService();;
 
 
   runApp(
