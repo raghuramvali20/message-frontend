@@ -5,9 +5,10 @@ class ChatModel {
   String chatUserId;
   String previewChat;
   DateTime time;
+  int? unreadMessages;
 
 
-  ChatModel(this.chatId, this.chatUserName, this.profilePic, this.chatUserId, this.previewChat, this.time);
+  ChatModel(this.chatId, this.chatUserName, this.profilePic, this.chatUserId, this.previewChat, this.time, [this.unreadMessages = 0]);
 
   factory ChatModel.fromJson(Map<String, dynamic> json) {
     return ChatModel(

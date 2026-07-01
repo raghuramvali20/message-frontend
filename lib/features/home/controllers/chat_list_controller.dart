@@ -13,30 +13,37 @@ class ChatListController with ChangeNotifier{
     ChatListController(this._service, this._userStorage);
 
     User? _user;
-    List<ChatModel>? _chatList;
+    List<ChatModel>? _readChatList;
+    List<ChatModel>? _unreadChatList;
     String? _error;
     bool _loading = false;
 
-    List<ChatModel>? get chatList => _chatList;
+    List<ChatModel>? get readChatList => _readChatList;
+    List<ChatModel>? get unreadChatList => _unreadChatList;
     String? get error => _error;
     bool get loading => _loading;
 
     Future<void> fetchChats() async{
         _loading = true;
         _error = null;
+        _readChatList = [];
+        _unreadChatList = [];
         notifyListeners();
 
         _user = await _userStorage.loadUser();
-        print(_user!.id);
-        if(_user != null){
-            final response = await _service.fetchChats(_user!.id);
-            if(response is SuccessResponse<List<ChatModel>>){
-                _chatList = response.data;
-            }else if(response is FailureResponse<List<ChatModel>>){
-                _error = response.serverMessage;
-            }
-        }else{
+        if (_user == null) {
             _error = "Unauthenticated user";
+        } else {
+            final response = await _service.fetchChats(_user!.id);
+            if (response is SuccessResponse<List<ChatModel>>) {
+                final data = response.data ?? [];
+                _readChatList = data.where((chat) => (chat.unreadMessages ?? 0) == 0).toList();
+                _unreadChatList = data.where((chat) => (chat.unreadMessages ?? 0) > 0).toList();
+            } else if (response is FailureResponse<List<ChatModel>>) {
+                _error = response.serverMessage;
+                _readChatList = [];
+                _unreadChatList = [];
+            }
         }
 
         _loading = false;

@@ -25,8 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
         drawer: Drawer(),
         body: Column(
             children: [
-                SearchBarBuilder(),
-                ChatBuilder(),
+                const SearchBarBuilder(),
+                const Expanded(child: ChatBuilder()),
             ],
         )
     );
