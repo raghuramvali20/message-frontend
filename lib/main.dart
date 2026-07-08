@@ -9,13 +9,16 @@ import 'package:message/features/auth/screens/get_started_screen.dart';
 import 'package:message/features/auth/screens/login_screen.dart';
 import 'package:message/features/auth/screens/register_screen.dart';
 import 'package:message/features/auth/services/auth_services.dart';
+import 'package:message/features/auth/services/db_auth_service.dart';
+import 'package:message/features/auth/services/fake_auth_service.dart';
 import 'package:message/features/chat/controllers/chat_controller.dart';
 import 'package:message/features/chat/services/chat_services.dart';
 import 'package:message/features/chat/services/date_time_managing_service.dart';
 import 'package:message/features/home/controllers/chat_list_controller.dart';
 import 'package:message/features/home/screens/home_screen.dart';
 import 'package:message/features/chat/screens/chat_screen.dart';
-import 'package:message/features/home/services/chat_list_service.dart';
+import 'package:message/features/home/services/db_chat_list_service.dart';
+import 'package:message/features/home/services/fake_chat_list_service.dart';
 import 'package:message/features/profile/screens/profile_screen.dart';
 import 'package:message/features/settings/screens/settings_screen.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +27,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
 
-  final authServices =  AuthServices();
-  final chatListServices = ChatListService();
+  final authServices =  DbAuthServices();
+  final chatListServices = DbChatListServices();
   final chatServices = ChatServices();
   final appStorage = AppStorageService();;
 

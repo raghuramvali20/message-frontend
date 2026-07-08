@@ -2,14 +2,12 @@ class User {
   final String id;
   final String userName;
   final String email;
-  final dynamic blockedUsers;
-  final String profilePic = " ";
+  final String profilePic = "";
 
   User({
     required this.id,
     required this.userName,
     required this.email,
-    required this.blockedUsers,
   });
 
   // Return a Map for Hive
@@ -17,8 +15,7 @@ class User {
     return {
       'id': id,
       'userName': userName,
-      'email': email,
-      'blockedUsers': blockedUsers,
+      'email': email
     };
   }
 
@@ -28,7 +25,6 @@ class User {
       id: json["_id"] ?? json["id"] ?? "",
       userName: json['userName'],
       email: json['email'],
-      blockedUsers: json['blockedUsers'] ?? [],
     );
   }
 }

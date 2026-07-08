@@ -1,7 +1,7 @@
 import "package:http/http.dart" as http;
 import "dart:convert";
 
-class Api {
+class ApiMethods {
   static const String baseUrl = "http://10.169.9.133:3000";
 
   // GET request with optional headers
