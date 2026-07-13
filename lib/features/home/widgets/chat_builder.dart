@@ -20,9 +20,9 @@ class _ChatBuilderState extends State<ChatBuilder> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      context.read<ChatListController>().fetchChats();
-    });
+    // Future.microtask(() {
+    //   context.read<ChatListController>().fetchChats();
+    // });
   }
 
   @override

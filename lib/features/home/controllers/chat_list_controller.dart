@@ -22,6 +22,7 @@ class ChatListController with ChangeNotifier{
     List<ChatModel>? get unreadChatList => _unreadChatList;
     String? get error => _error;
     bool get loading => _loading;
+    User? get user => _user;
 
     Future<void> fetchChats() async{
         _loading = true;
