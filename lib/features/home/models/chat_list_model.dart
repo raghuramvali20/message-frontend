@@ -13,9 +13,9 @@ class ChatModel {
   factory ChatModel.fromJson(Map<String, dynamic> json) {
     return ChatModel(
       json["id"] ?? json["_id"] ?? " ",
-      json["chatUserName"] ?? " ",
+      json["userName"] ?? " ",
       json["profilePic"] ?? " ",
-      json["chatUserId"] ?? json["_id"] ?? " ",
+      json["receiverId"] ?? json["_id"] ?? " ",
       json["previewChat"] ?? " ",
       json["time"] ?? DateTime.now()
      );
