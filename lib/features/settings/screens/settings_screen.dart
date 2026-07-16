@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:message/core/theme/app_theme.dart';
-import 'package:message/core/constants/app_constants.dart';
 
 class SettingsScreen extends StatefulWidget {
+    static final String routeName = "settings-screen";
   const SettingsScreen({super.key});
 
   @override
@@ -90,6 +90,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       );
                     },
                   ),
+                  const Divider(height: 1),
+                  ListTile(
+                    title: Text(
+                        "Logout",  
+                        style: TextStyle(
+                            color: Colors.red
+                            )
+                    ),
+                    trailing: Icon(Icons.chevron_right),
+                    onTap: (){
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                                return AlertDialog(
+                                    title: const Text("Are you sure you want to log out?"),
+                                    actions: [
+                                        TextButton(
+                                            onPressed: (){
+                                                Navigator.pop(context);
+                                            }, 
+                                            child: Text("Cancel")
+                                        ),
+                                        TextButton(
+                                            onPressed: (){
+                                                Navigator.pop(context);
+                                            }, 
+                                            child: Text(
+                                                "Logout", 
+                                                style: TextStyle(
+                                                    color: Colors.red
+                                                )
+                                            )
+                                        )
+                                    ],
+                                );
+                            });
+                    },
+                  )
                 ],
               ),
             ),

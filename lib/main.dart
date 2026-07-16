@@ -68,8 +68,8 @@ class MyApp extends StatelessWidget {
         AppConstants.routeHome: (context) => const HomeScreen(),
         SplashScreen.routeName: (context) => const SplashScreen(),
         AppConstants.routeChat: (context) => const ChatScreen(),
-        // AppConstants.routeProfile: (context) => const ProfileScreen(),
-        // AppConstants.routeSettings: (context) => const SettingsScreen(),
+        AppConstants.routeProfile: (context) => const ProfileScreen(),
+        AppConstants.routeSettings: (context) => const SettingsScreen(),
       },
     );
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:message/core/theme/app_theme.dart';
 import 'package:message/features/home/controllers/chat_list_controller.dart';
+import 'package:message/features/profile/screens/profile_screen.dart';
+import 'package:message/features/settings/screens/settings_screen.dart';
 import 'package:provider/provider.dart';
 
 class BuildDrawer extends StatefulWidget {
@@ -36,16 +38,26 @@ class _BuildDrawerState extends State<BuildDrawer> {
                       ],
                     )
                 ),
-                InkWell(
-                  child: ListTile(
-                      title: Text("Profile", style: AppTypography.headlineMd,),
-                      trailing: Icon(Icons.arrow_forward_ios),
+                Card(
+                  child: InkWell(
+                      onTap: (){
+                          Navigator.pushNamed(context, ProfileScreen.routeName);
+                      },
+                    child: ListTile(
+                        title: Text("Profile", style: AppTypography.headlineMd,),
+                        trailing: Icon(Icons.arrow_forward_ios),
+                    ),
                   ),
                 ),
-                InkWell(
-                  child: ListTile(
-                      title: Text("Settings", style: AppTypography.headlineMd,),
-                      trailing: Icon(Icons.arrow_forward_ios),
+                Card(
+                  child: InkWell(
+                      onTap: (){
+                          Navigator.pushNamed(context, SettingsScreen.routeName);
+                      },
+                    child: ListTile(
+                        title: Text("Settings", style: AppTypography.headlineMd,),
+                        trailing: Icon(Icons.arrow_forward_ios),
+                    ),
                   ),
                 )
             ],

@@ -18,21 +18,23 @@ class ChatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      onLongPress: onLongPress,
-      child: ListTile(
-        leading: CircleAvatar(
-          radius: 24,
-          backgroundImage: NetworkImage(chat.profilePic),
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        onLongPress: onLongPress,
+        child: ListTile(
+          leading: CircleAvatar(
+            radius: 24,
+            backgroundImage: NetworkImage(chat.profilePic),
+          ),
+          title: Text(chat.chatUserName,
+              style: const TextStyle(fontWeight: FontWeight.bold)),
+          subtitle: Text(chat.previewChat),
+          trailing: isUnread
+              ? _UnreadBadge(count: chat.unreadMessages, time: chat.time)
+              : Text(chat.time.toString(),
+                  style: const TextStyle(color: Colors.grey, fontSize: 12)),
         ),
-        title: Text(chat.chatUserName,
-            style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(chat.previewChat),
-        trailing: isUnread
-            ? _UnreadBadge(count: chat.unreadMessages, time: chat.time)
-            : Text(chat.time.toString(),
-                style: const TextStyle(color: Colors.grey, fontSize: 12)),
       ),
     );
   }

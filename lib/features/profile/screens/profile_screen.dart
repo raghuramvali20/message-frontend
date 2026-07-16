@@ -1,214 +1,102 @@
-// import 'package:flutter/material.dart';
-// import 'package:message/core/theme/app_theme.dart';
-// import 'package:message/core/constants/app_constants.dart';
-// import 'package:message/core/providers/app_state_provider.dart';
-// import 'package:message/core/widgets/snack_bar_helper.dart';
+import 'package:flutter/material.dart';
+import 'package:message/core/theme/app_theme.dart';
 
-// class ProfileScreen extends StatefulWidget {
-//   const ProfileScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+    static final String routeName = "profile-screen";
+  const ProfileScreen({super.key});
 
-//   @override
-//   State<ProfileScreen> createState() => _ProfileScreenState();
-// }
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
 
-// class _ProfileScreenState extends State<ProfileScreen> {
-//   late final AppStateProvider _appState;
-//   late TextEditingController _usernameController;
-//   bool _isEditing = false;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _appState = AppStateProvider();
-//     _usernameController = TextEditingController(
-//       text: _appState.currentUser?.userName ?? '',
-//     );
-//   }
-
-//   @override
-//   void dispose() {
-//     _usernameController.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final user = _appState.currentUser;
-
-//     if (user == null) {
-//       return Scaffold(
-//         appBar: AppBar(title: const Text('Profile')),
-//         body: const Center(
-//           child: Text('No user data'),
-//         ),
-//       );
-//     }
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Profile'),
-//         actions: [
-//           if (!_isEditing)
-//             IconButton(
-//               icon: const Icon(Icons.edit),
-//               onPressed: () => setState(() => _isEditing = true),
-//             ),
-//         ],
-//       ),
-//       body: SingleChildScrollView(
-//         padding: const EdgeInsets.all(AppSpacing.md),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.center,
-//           children: [
-//             // Avatar
-//             CircleAvatar(
-//               radius: 50,
-//               backgroundImage: user.profilePic != null && user.profilePic!.isNotEmpty
-//                   ? NetworkImage(user.profilePic!)
-//                   : null,
-//               child: user.profilePic == null || user.profilePic!.isEmpty
-//                   ? Text(
-//                       user.userName.isNotEmpty ? user.userName[0].toUpperCase() : '?',
-//                       style: AppTypography.headlineLg,
-//                     )
-//                   : null,
-//             ),
-//             const SizedBox(height: AppSpacing.lg),
-
-//             // User Info
-//             Card(
-//               child: Padding(
-//                 padding: const EdgeInsets.all(AppSpacing.md),
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Text(
-//                       'User Information',
-//                       style: AppTypography.titleMd,
-//                     ),
-//                     const SizedBox(height: AppSpacing.md),
-//                     _buildInfoTile('Username', user.userName),
-//                     const SizedBox(height: AppSpacing.md),
-//                     _buildInfoTile('Email', user.email ?? 'N/A'),
-//                     const SizedBox(height: AppSpacing.md),
-//                     _buildInfoTile('User ID', user.id),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(height: AppSpacing.lg),
-
-//             // Edit Mode
-//             if (_isEditing) ...[
-//               Card(
-//                 child: Padding(
-//                   padding: const EdgeInsets.all(AppSpacing.md),
-//                   child: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Text(
-//                         'Edit Profile',
-//                         style: AppTypography.titleMd,
-//                       ),
-//                       const SizedBox(height: AppSpacing.md),
-//                       TextField(
-//                         controller: _usernameController,
-//                         decoration: const InputDecoration(
-//                           labelText: 'Username',
-//                         ),
-//                       ),
-//                       const SizedBox(height: AppSpacing.lg),
-//                       Row(
-//                         children: [
-//                           Expanded(
-//                             child: TextButton(
-//                               onPressed: () => setState(() => _isEditing = false),
-//                               child: const Text('Cancel'),
-//                             ),
-//                           ),
-//                           const SizedBox(width: AppSpacing.md),
-//                           Expanded(
-//                             child: ElevatedButton(
-//                               onPressed: _saveProfile,
-//                               child: const Text('Save'),
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               ),
-//               const SizedBox(height: AppSpacing.lg),
-//             ],
-
-//             // Logout Button
-//             SizedBox(
-//               width: double.infinity,
-//               child: ElevatedButton(
-//                 style: ElevatedButton.styleFrom(
-//                   backgroundColor: AppColors.error,
-//                 ),
-//                 onPressed: _logout,
-//                 child: const Text('Logout'),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildInfoTile(String label, String value) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Text(
-//           label,
-//           style: AppTypography.labelMd,
-//         ),
-//         const SizedBox(height: AppSpacing.xs),
-//         Text(
-//           value,
-//           style: AppTypography.bodyMd,
-//           overflow: TextOverflow.ellipsis,
-//         ),
-//       ],
-//     );
-//   }
-
-//   void _saveProfile() {
-//     SnackBarHelper.showSuccess(context, 'Profile saved');
-//     setState(() => _isEditing = false);
-//   }
-
-//   Future<void> _logout() async {
-//     final confirm = await showDialog<bool>(
-//       context: context,
-//       builder: (context) => AlertDialog(
-//         title: const Text('Logout'),
-//         content: const Text('Are you sure you want to logout?'),
-//         actions: [
-//           TextButton(
-//             onPressed: () => Navigator.pop(context, false),
-//             child: const Text('Cancel'),
-//           ),
-//           TextButton(
-//             onPressed: () => Navigator.pop(context, true),
-//             child: const Text('Logout'),
-//           ),
-//         ],
-//       ),
-//     );
-
-//     if (confirm == true && mounted) {
-//       await _appState.logout();
-//       if (mounted) {
-//         Navigator.pushReplacementNamed(
-//           context,
-//           AppConstants.routeGetStarted,
-//         );
-//       }
-//     }
-//   }
-// }
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+            title: Text("Profile"),
+            elevation: 0,
+        ),
+        body: Container(
+            width: double.infinity,
+            color: Colors.grey[50],
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                children: [
+                    SizedBox(height: 30),
+                    Column(
+                      children: [
+                        ClipRect(
+                          child: CircleAvatar(
+                              radius: 75,
+                              backgroundImage: NetworkImage("https://tse2.mm.bing.net/th/id/OIP.7M38MNjxmTr0STEo5j_Z_wHaIs?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Text("Raghu Ram", style: AppTypography.headlineLg,),
+                        SizedBox(height: 8),
+                        Text("@raghuram", style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+                      ],
+                    ),
+                    SizedBox(height: 30),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: ListView(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            children: [
+                                Card(
+                                  child: ListTile(
+                                      leading: Icon(Icons.person, color: AppColors.primary),
+                                      title: Text("Full Name"),
+                                      subtitle: Text("Raghu Ram"),
+                                  ),
+                                ),
+                                Card(
+                                  child: ListTile(
+                                      leading: Icon(Icons.email, color: AppColors.primary),
+                                      title: Text("Email"),
+                                      subtitle: Text("raghu@gmail.com"),
+                                  ),
+                                ),
+                                Card(
+                                  child: ListTile(
+                                      leading: Icon(Icons.phone, color: AppColors.primary),
+                                      title: Text("Phone"),
+                                      subtitle: Text("+91 9876543210"),
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.primary,
+                                        padding: EdgeInsets.symmetric(vertical: 12),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                      child: Text("Edit Profile", style: TextStyle(color: Colors.white, fontSize: 16)),
+                                  ),
+                                )
+                            ],
+                        ),
+                      ),
+                    )
+                ]
+              ),
+            )
+        ),
+    );
+  }
+}
