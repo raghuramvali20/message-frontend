@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:message/core/models/api_response.dart';
 import 'package:message/core/models/user_model.dart';
+import 'package:message/core/services/socket_services.dart';
 import 'package:message/core/storage_services/storage_services.dart';
 import 'package:message/features/chat/models/message_model.dart';
 import 'package:message/features/chat/services/chat_services.dart';
@@ -9,10 +10,14 @@ import 'package:message/features/chat/services/date_time_managing_service.dart';
 class ChatController with ChangeNotifier {
   final ChatServices _services;
   final UserStorageService _userStorage;
+  final SocketService _socketService;
 
-  ChatController(this._services, this._userStorage);
+  ChatController(this._services, this._userStorage, this._socketService) {
+    _socketService.onNewMessage = _handleNewMessage;
+  }
 
   String? _error;
+  String? _activeChatId;
   User? _user;
   List<MessageModel>? _messages;
   bool _loading = false;
@@ -23,6 +28,7 @@ class ChatController with ChangeNotifier {
   bool get loading => _loading;
 
   Future<void> fetchMessages(String chatId) async {
+    _activeChatId = chatId;
     _loading = true;
     _error = null;
     notifyListeners();
@@ -45,6 +51,24 @@ class ChatController with ChangeNotifier {
 
     _loading = false;
     notifyListeners();
+  }
+
+  void _handleNewMessage(dynamic data) {
+    if (data == null) return;
+
+    final payload = data is Map ? data['serverMessage'] ?? data : data;
+    if (payload is! Map) return;
+
+    final message = MessageModel.fromJson(Map<String, dynamic>.from(payload));
+    final timeAndDate = DateTimeManagingService(message.time).convertTimeAndDate();
+    message.formattedTime = timeAndDate.time;
+    message.formattedDate = timeAndDate.date;
+
+    if (_activeChatId == message.chatId) {
+      _messages ??= [];
+      _messages!.add(message);
+      notifyListeners();
+    }
   }
 
   Future<void> sendMessage(

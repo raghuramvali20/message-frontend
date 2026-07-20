@@ -1,16 +1,18 @@
 import 'package:flutter/widgets.dart';
 import 'package:message/core/models/api_response.dart';
 import 'package:message/core/models/user_model.dart';
+import 'package:message/core/services/socket_services.dart';
 import 'package:message/core/storage_services/storage_services.dart';
 import 'package:message/features/home/models/chat_list_model.dart';
 import 'package:message/features/home/services/chat_list_service.dart';
 
-class ChatListController with ChangeNotifier{
+class HomeScreenController with ChangeNotifier{
 
     final ChatListService _service;
     final UserStorageService _userStorage;
+    final SocketService _socket;
 
-    ChatListController(this._service, this._userStorage);
+    HomeScreenController(this._service, this._userStorage, this._socket);
 
     User? _user;
     List<ChatModel>? _readChatList;
@@ -23,6 +25,10 @@ class ChatListController with ChangeNotifier{
     String? get error => _error;
     bool get loading => _loading;
     User? get user => _user;
+
+    Future<void> intiSocket() async{
+        _socket.init(_user!.id);
+    }
 
     Future<void> fetchChats() async{
         _loading = true;

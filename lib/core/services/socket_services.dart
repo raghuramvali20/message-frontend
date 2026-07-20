@@ -1,7 +1,8 @@
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketService {
-  late IO.Socket socket;
+  IO.Socket? socket;
+  void Function(dynamic data)? onNewMessage;
 
   void init(String userId) {
     socket = IO.io(
@@ -12,21 +13,12 @@ class SocketService {
           .build(),
     );
 
-    socket.onConnect((_) {
-      print('Socket connected: ${socket.id}');
-      socket.emit('connect_user', userId);
+    socket!.onConnect((_) {
+      socket!.emit('connect_user', userId);
     });
 
-    socket.on('newMessage', (data) {
-      print('New message event: $data');
-      // Handle incoming message data here
+    socket!.on('newMessage', (data) {
+      onNewMessage?.call(data);
     });
-
-    socket.onDisconnect((_) => print('Socket disconnected'));
-    socket.onError((err) => print('Socket error: $err'));
-  }
-
-  void dispose() {
-    socket.dispose();
   }
 }

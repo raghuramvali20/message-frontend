@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:message/core/services/socket_services.dart';
 import 'package:message/features/auth/screens/splash_screen.dart';
 import 'package:message/core/storage_services/app_storage_services.dart';
 import 'package:message/core/theme/app_theme.dart';
@@ -14,7 +15,7 @@ import 'package:message/features/auth/services/fake_auth_service.dart';
 import 'package:message/features/chat/controllers/chat_controller.dart';
 import 'package:message/features/chat/services/chat_services.dart';
 import 'package:message/features/chat/services/date_time_managing_service.dart';
-import 'package:message/features/home/controllers/chat_list_controller.dart';
+import 'package:message/features/home/controllers/home_screen_controller.dart';
 import 'package:message/features/home/screens/home_screen.dart';
 import 'package:message/features/chat/screens/chat_screen.dart';
 import 'package:message/features/home/services/db_chat_list_service.dart';
@@ -30,7 +31,8 @@ void main() async {
   final authServices =  DbAuthServices();
   final chatListServices = DbChatListServices();
   final chatServices = ChatServices();
-  final appStorage = AppStorageService();;
+  final appStorage = AppStorageService();
+  final socketService = SocketService();
 
 
   runApp(
@@ -40,10 +42,10 @@ void main() async {
             create: (_) => AuthController(authServices, appStorage, appStorage)
             ),
             ChangeNotifierProvider(
-                create: (_) => ChatListController(chatListServices, appStorage)
+                create: (_) => HomeScreenController(chatListServices, appStorage, socketService)
             ),
             ChangeNotifierProvider(
-                create: (_) => ChatController(chatServices, appStorage)
+                create: (_) => ChatController(chatServices, appStorage, socketService)
             )
         ],
         child: (MyApp()),

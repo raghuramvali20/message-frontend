@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:message/core/widgets/snack_bar_helper.dart';
 import 'package:message/features/chat/models/chat_arguments.dart';
 import 'package:message/features/chat/screens/chat_screen.dart';
-import 'package:message/features/home/controllers/chat_list_controller.dart';
+import 'package:message/features/home/controllers/home_screen_controller.dart';
 import 'package:message/features/home/widgets/chat_tile_builder.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +27,7 @@ class _ChatBuilderState extends State<ChatBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    final chats = context.watch<ChatListController>();
+    final chats = context.watch<HomeScreenController>();
     final readChats = chats.readChatList ?? [];
     final unreadChats = chats.unreadChatList ?? [];
 

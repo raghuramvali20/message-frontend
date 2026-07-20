@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:message/core/theme/app_theme.dart';
-import 'package:message/features/home/controllers/chat_list_controller.dart';
+import 'package:message/features/home/controllers/home_screen_controller.dart';
 import 'package:message/features/home/widgets/build_drawer.dart';
 import 'package:message/features/home/widgets/chat_builder.dart';
 import 'package:message/features/home/widgets/search_bar_builder.dart';
@@ -20,8 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
     @override
   void initState() {
     super.initState();
-    Future.microtask((){
-        context.read<ChatListController>().fetchChats();
+    Future.microtask(() async{
+        
+        await context.read<HomeScreenController>().fetchChats();
+        await context.read<HomeScreenController>().intiSocket();
     });
   }
 
@@ -42,7 +44,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 const Expanded(child: ChatBuilder()),
             ],
         ),
-        floatingActionButton: IconButton(onPressed: (){}, icon: Icon(Icons.add)),
+        floatingActionButton: Container(
+            padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              color: AppColors.primary,
+          ),
+            child: IconButton(onPressed: (){}, icon: Icon(Icons.add, color: AppColors.background,))
+            ),
     );
   }
 }

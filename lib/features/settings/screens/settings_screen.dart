@@ -71,16 +71,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Card(
               child: Column(
                 children: [
-                  ListTile(
-                    title: const Text('Block List'),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Block list coming soon')),
-                      );
-                    },
-                  ),
-                  const Divider(height: 1),
+                //   ListTile(
+                //     title: const Text('Block List'),
+                //     trailing: const Icon(Icons.chevron_right),
+                //     onTap: () {
+                //       ScaffoldMessenger.of(context).showSnackBar(
+                //         const SnackBar(content: Text('Block list coming soon')),
+                //       );
+                //     },
+                //   ),
+                //   const Divider(height: 1),
                   ListTile(
                     title: const Text('Privacy Policy'),
                     trailing: const Icon(Icons.chevron_right),

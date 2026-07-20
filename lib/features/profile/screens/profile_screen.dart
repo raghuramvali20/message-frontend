@@ -44,7 +44,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.white,
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(20),
                             topRight: Radius.circular(20),
@@ -56,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Card(
                                   child: ListTile(
                                       leading: Icon(Icons.person, color: AppColors.primary),
-                                      title: Text("Full Name"),
+                                      title: Text("User Name"),
                                       subtitle: Text("Raghu Ram"),
                                   ),
                                 ),
@@ -65,13 +64,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       leading: Icon(Icons.email, color: AppColors.primary),
                                       title: Text("Email"),
                                       subtitle: Text("raghu@gmail.com"),
-                                  ),
-                                ),
-                                Card(
-                                  child: ListTile(
-                                      leading: Icon(Icons.phone, color: AppColors.primary),
-                                      title: Text("Phone"),
-                                      subtitle: Text("+91 9876543210"),
                                   ),
                                 ),
                                 SizedBox(height: 20),
