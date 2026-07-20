@@ -10,12 +10,16 @@ class DbChatServices implements ChatServices{
   Future<ApiResponse<List<MessageModel>>> getChatsByChatId(String chatId) async{
 
     String? token = await AppStorageService().loadToken(); 
-
     final response = await ApiMethods.get("/chats/by-chat/$chatId", headers: {"token": "Bearer $token"});
+
+    final body = jsonDecode(response.body);
+    final List<dynamic> messagesFromResponse = body["messages"];
+
     if(response.statusCode == 200){
-        final Map<String, dynamic> body = jsonDecode(response.body);
-        final List<dynamic> messagesFromResponse = body["messages"];
-        List<MessageModel> messages = messagesFromResponse.map((m) => MessageModel.fromJson(m)) as List;
+        List<MessageModel> messages = messagesFromResponse.map((m) => MessageModel.fromJson(m)).toList();
+        return SuccessResponse<List<MessageModel>>(messages);
+    }else{
+        return FailureResponse(body["serverMessage"]);
     }
   }
 }
