@@ -45,4 +45,9 @@ class FakeChatServices implements ChatServices{
       return FailureResponse("No messages");
     }
   }
+  @override
+  Future<ApiResponse<MessageModel>> sendMessage(String message, String receiverId, String chatId) {
+    // TODO: implement sendMessage
+    throw UnimplementedError();
+  }
 }

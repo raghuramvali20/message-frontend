@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Column(
             children: [
                 const SearchBarBuilder(),
-                const Expanded(child: ChatBuilder()),
+                const Expanded(flex: 1, child: ChatBuilder()),
             ],
         ),
         floatingActionButton: Container(

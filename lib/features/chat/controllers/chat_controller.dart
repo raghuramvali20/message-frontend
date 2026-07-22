@@ -77,20 +77,26 @@ class ChatController with ChangeNotifier {
     String receiverId,
   ) async {
     final nowIso = DateTime.now().toUtc().toIso8601String();
-    MessageModel message = MessageModel(
-      chatId: chatId,
-      senderId: user!.id,
-      receiverId: receiverId,
-      messageText: messageText,
-      time: nowIso,
-    );
+    // MessageModel message = MessageModel(
+    //   chatId: chatId,
+    //   senderId: user!.id,
+    //   receiverId: receiverId,
+    //   messageText: messageText,
+    //   time: nowIso,
+    // );
 
+    // print(messageText);
+    final response = await _services.sendMessage(messageText, receiverId, chatId);
+    if(response is SuccessResponse<MessageModel>){
     // enrich with formatted values
-    final timeAndDate = DateTimeManagingService(message.time).convertTimeAndDate();
-    message.formattedTime = timeAndDate.time;
-    message.formattedDate = timeAndDate.date;
+        MessageModel message = response.data;
+        final timeAndDate = DateTimeManagingService(message.time).convertTimeAndDate();
+        message.formattedTime = timeAndDate.time;
+        message.formattedDate = timeAndDate.date;
+        messages!.add(message);
+        notifyListeners();
+    }
 
-    messages!.add(message);
-    notifyListeners();
+   
   }
 }

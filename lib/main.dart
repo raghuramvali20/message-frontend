@@ -13,7 +13,7 @@ import 'package:message/features/auth/services/auth_services.dart';
 import 'package:message/features/auth/services/db_auth_service.dart';
 import 'package:message/features/auth/services/fake_auth_service.dart';
 import 'package:message/features/chat/controllers/chat_controller.dart';
-import 'package:message/features/chat/services/fake_chat_service.dart';
+import 'package:message/features/chat/services/db_chat_services.dart';
 import 'package:message/features/chat/services/date_time_managing_service.dart';
 import 'package:message/features/home/controllers/home_screen_controller.dart';
 import 'package:message/features/home/screens/home_screen.dart';
@@ -30,7 +30,7 @@ void main() async {
 
   final authServices =  DbAuthServices();
   final chatListServices = DbChatListServices();
-  final chatServices = FakeChatServices();
+  final chatServices = DbChatServices();
   final appStorage = AppStorageService();
   final socketService = SocketService();
 
