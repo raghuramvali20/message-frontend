@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:message/core/theme/app_theme.dart';
+import 'package:message/features/chat/services/date_time_managing_service.dart';
 import 'package:message/features/home/models/chat_list_model.dart';
 
 class ChatTile extends StatelessWidget {
@@ -31,8 +32,8 @@ class ChatTile extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold)),
           subtitle: Text(chat.previewChat),
           trailing: isUnread
-              ? _UnreadBadge(count: chat.unreadMessages, time: chat.time)
-              : Text(chat.time.toString(),
+              ? _UnreadBadge(count: chat.unreadMessages, time: chat.lastUpdate)
+              : Text(DateTimeManagingService(chat.lastUpdate.toString()).convertTimeAndDate().date,
                   style: const TextStyle(color: Colors.grey, fontSize: 12)),
         ),
       ),

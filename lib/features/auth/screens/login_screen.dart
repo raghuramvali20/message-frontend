@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:message/core/widgets/snack_bar_helper.dart';
 import 'package:message/features/auth/controllers/auth_controller.dart';
+import 'package:message/features/auth/state/auth_state.dart';
 import 'package:message/features/home/screens/home_screen.dart';
 import 'package:message/features/auth/screens/register_screen.dart';
 import 'package:flutter/gestures.dart';
@@ -58,14 +59,15 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       // 3. Only save if success == true AND user exists
-      if (authController.user != null) {
+      final auth = context.read<AuthState>();
+      if (auth.user != null) {
         Navigator.pushNamedAndRemoveUntil(
           context,
           HomeScreen.routeName,
           (route) => false,
         );
-      } else if(authController.error != null){
-        SnackBarHelper.showError(context, authController.error!);
+      } else if (auth.error != null) {
+        SnackBarHelper.showError(context, auth.error!);
       }
     } catch (e) {
       if (!mounted) return;
@@ -78,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final auth = context.watch<AuthController>();
+    final auth = context.watch<AuthState>();
 
     return Scaffold(
       appBar: AppBar(

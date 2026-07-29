@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Future.microtask(() async{
         
         await context.read<HomeScreenController>().fetchChats();
-        await context.read<HomeScreenController>().intiSocket();
+        await context.read<HomeScreenController>().initSocket();
     });
   }
 
@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20)),
               color: AppColors.primary,
           ),
-            child: IconButton(onPressed: (){}, icon: Icon(Icons.add, color: AppColors.background,))
+            child: IconButton(onPressed: (){print("clicked");}, icon: Icon(Icons.add, color: AppColors.background,))
             ),
     );
   }

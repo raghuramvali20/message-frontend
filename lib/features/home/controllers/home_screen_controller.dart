@@ -1,59 +1,55 @@
-import 'package:flutter/widgets.dart';
 import 'package:message/core/models/api_response.dart';
-import 'package:message/core/models/user_model.dart';
 import 'package:message/core/services/socket_services.dart';
 import 'package:message/core/storage_services/storage_services.dart';
 import 'package:message/features/home/models/chat_list_model.dart';
 import 'package:message/features/home/services/chat_list_service.dart';
+import 'package:message/features/home/state/home_screen_state.dart';
 
-class HomeScreenController with ChangeNotifier{
+class HomeScreenController {
+  final ChatListService _service;
+  final UserStorageService _userStorage;
+  final SocketService _socketService;
+  final HomeScreenState _state;
 
-    final ChatListService _service;
-    final UserStorageService _userStorage;
-    final SocketService _socket;
+  HomeScreenController(this._service, this._userStorage, this._socketService, this._state);
 
-    HomeScreenController(this._service, this._userStorage, this._socket);
+  Future<void> initSocket() async {
+    final userId = _state.user?.id;
+    if (userId != null) {
+      _socketService.init(userId);
+    }
+  }
 
-    User? _user;
-    List<ChatModel>? _readChatList;
-    List<ChatModel>? _unreadChatList;
-    String? _error;
-    bool _loading = false;
+  Future<void> fetchChats() async {
+    _state.setLoading(true);
+    _state.setError(null);
+    _state.setChats(readChatList: [], unreadChatList: []);
 
-    List<ChatModel>? get readChatList => _readChatList;
-    List<ChatModel>? get unreadChatList => _unreadChatList;
-    String? get error => _error;
-    bool get loading => _loading;
-    User? get user => _user;
+    final user = await _userStorage.loadUser();
+    _state.setUser(user);
 
-    Future<void> intiSocket() async{
-        _socket.init(_user!.id);
+    if (user == null) {
+      _state.setError('Unauthenticated user');
+      _state.setLoading(false);
+      return;
     }
 
-    Future<void> fetchChats() async{
-        _loading = true;
-        _error = null;
-        _readChatList = [];
-        _unreadChatList = [];
-        notifyListeners();
+    final response = await _service.fetchChats(user.id);
 
-        _user = await _userStorage.loadUser();
-        if (_user == null) {
-            _error = "Unauthenticated user";
-        } else {
-            final response = await _service.fetchChats(_user!.id);
-            if (response is SuccessResponse<List<ChatModel>>) {
-                final data = response.data ?? [];
-                _readChatList = data.where((chat) => (chat.unreadMessages ?? 0) == 0).toList();
-                _unreadChatList = data.where((chat) => (chat.unreadMessages ?? 0) > 0).toList();
-            } else if (response is FailureResponse<List<ChatModel>>) {
-                _error = response.serverMessage;
-                _readChatList = [];
-                _unreadChatList = [];
-            }
-        }
+    if (response is SuccessResponse<List<ChatModel>>) {
+      final data = response.data ?? [];
 
-        _loading = false;
-        notifyListeners();
+      final readChats =
+          data.where((chat) => (chat.unreadMessages ?? 0) == 0).toList();
+      final unreadChats =
+          data.where((chat) => (chat.unreadMessages ?? 0) > 0).toList();
+
+      _state.setChats(readChatList: readChats, unreadChatList: unreadChats);
+    } else if (response is FailureResponse<List<ChatModel>>) {
+      _state.setError(response.serverMessage);
+      _state.setChats(readChatList: [], unreadChatList: []);
     }
+
+    _state.setLoading(false);
+  }
 }

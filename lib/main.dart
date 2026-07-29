@@ -12,6 +12,7 @@ import 'package:message/features/auth/screens/register_screen.dart';
 import 'package:message/features/auth/services/auth_services.dart';
 import 'package:message/features/auth/services/db_auth_service.dart';
 import 'package:message/features/auth/services/fake_auth_service.dart';
+import 'package:message/features/auth/state/auth_state.dart';
 import 'package:message/features/chat/controllers/chat_controller.dart';
 import 'package:message/features/chat/services/db_chat_services.dart';
 import 'package:message/features/chat/services/date_time_managing_service.dart';
@@ -20,6 +21,7 @@ import 'package:message/features/home/screens/home_screen.dart';
 import 'package:message/features/chat/screens/chat_screen.dart';
 import 'package:message/features/home/services/db_chat_list_service.dart';
 import 'package:message/features/home/services/fake_chat_list_service.dart';
+import 'package:message/features/home/state/home_screen_state.dart';
 import 'package:message/features/profile/screens/profile_screen.dart';
 import 'package:message/features/settings/screens/settings_screen.dart';
 import 'package:provider/provider.dart';
@@ -39,14 +41,20 @@ void main() async {
     MultiProvider(
         providers: [
            ChangeNotifierProvider(
-            create: (_) => AuthController(authServices, appStorage, appStorage)
+            create: (_) => AuthState()
             ),
             ChangeNotifierProvider(
-                create: (_) => HomeScreenController(chatListServices, appStorage, socketService)
+                create: (_) => HomeScreenState()
             ),
             ChangeNotifierProvider(
                 create: (_) => ChatController(chatServices, appStorage, socketService)
-            )
+            ),
+
+
+            Provider(
+                create: (context) => HomeScreenController(chatListServices, appStorage, socketService, context.read<HomeScreenState>())
+            ),
+            Provider(create: (context) => AuthController(authServices, appStorage, appStorage, context.read<AuthState>()))
         ],
         child: (MyApp()),
     )

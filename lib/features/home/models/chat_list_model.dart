@@ -4,11 +4,11 @@ class ChatModel {
   String profilePic;
   String chatUserId;
   String previewChat;
-  DateTime time;
+  DateTime lastUpdate;
   int? unreadMessages;
 
 
-  ChatModel(this.chatId, this.chatUserName, this.profilePic, this.chatUserId, this.previewChat, this.time, [this.unreadMessages = 0]);
+  ChatModel(this.chatId, this.chatUserName, this.profilePic, this.chatUserId, this.previewChat, this.lastUpdate, [this.unreadMessages = 0]);
 
   factory ChatModel.fromJson(Map<String, dynamic> json) {
     return ChatModel(
@@ -16,8 +16,8 @@ class ChatModel {
       json["userName"] ?? " ",
       json["profilePic"] ?? " ",
       json["receiverId"] ?? json["_id"] ?? " ",
-      json["previewChat"] ?? " ",
-      json["time"] ?? DateTime.now()
+      json["preview"] ?? " ",
+      json["lastUpdate"] ?? DateTime.now()
      );
   }
 }

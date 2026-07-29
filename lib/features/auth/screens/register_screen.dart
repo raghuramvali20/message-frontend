@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:message/core/widgets/snack_bar_helper.dart';
 import 'package:message/features/auth/controllers/auth_controller.dart';
+import 'package:message/features/auth/state/auth_state.dart';
 import 'package:message/features/home/screens/home_screen.dart';
 import 'package:message/features/auth/screens/login_screen.dart';
 import 'package:message/features/auth/widgets/auth_screen_widgets.dart';
@@ -44,7 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     String userName = userNameController.text.trim();
     String email = emailController.text.trim();
-    String password = emailController.text.trim();
+    String password = passwordController.text.trim();
 
     if (!userNameRegex.hasMatch(userName)) {
       tempUserNameMessage = "User name only allows letters digits . and _";
@@ -71,15 +72,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final authController = context.read<AuthController>();
       await authController.register(userName, email, password);
       if (!mounted) return;
-      if (authController.user != null) {
+
+      final auth = context.read<AuthState>();
+      if (auth.user != null) {
         Navigator.pushNamedAndRemoveUntil(
           context,
           HomeScreen.routeName,
           (route) => false,
         );
-      } else if(authController.error != null){
-        // Show exact backend error: "Unauthorized, password is incorrect" etc
-        SnackBarHelper.showError(context, authController.error!);
+      } else if (auth.error != null) {
+        SnackBarHelper.showError(context, auth.error!);
       }
     } catch (e) {
       if (!mounted) return;
@@ -90,7 +92,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final auth = context.watch<AuthController>();
+    final auth = context.watch<AuthState>();
 
     return Scaffold(
       appBar: AppBar(
