@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:message/core/widgets/snack_bar_helper.dart';
 import 'package:message/features/chat/models/chat_arguments.dart';
 import 'package:message/features/chat/screens/chat_screen.dart';
-import 'package:message/features/home/controllers/home_screen_controller.dart';
 import 'package:message/features/home/state/home_screen_state.dart';
 import 'package:message/features/home/widgets/chat_tile_builder.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +15,7 @@ class ChatBuilder extends StatefulWidget {
 
 class _ChatBuilderState extends State<ChatBuilder> {
   bool _hasShownError = false;
-  final Set<String> _selectedChats = {}; // track selected chatIds
+ // final Set<String> _selectedChats = {}; // track selected chatIds
 
   @override
   void initState() {
@@ -29,8 +28,8 @@ class _ChatBuilderState extends State<ChatBuilder> {
   @override
   Widget build(BuildContext context) {
     final chats = context.watch<HomeScreenState>();
-    final readChats = chats.readChatList ?? [];
-    final unreadChats = chats.unreadChatList ?? [];
+    final readChats = chats.readChatList;
+    final unreadChats = chats.unreadChatList;
 
     if (chats.loading) {
       return const Center(child: CircularProgressIndicator());

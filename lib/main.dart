@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:message/core/controllers/socket_controller.dart';
 import 'package:message/core/services/socket_services.dart';
 import 'package:message/features/auth/screens/splash_screen.dart';
 import 'package:message/core/storage_services/app_storage_services.dart';
@@ -9,18 +10,15 @@ import 'package:message/features/auth/controllers/auth_controller.dart';
 import 'package:message/features/auth/screens/get_started_screen.dart';
 import 'package:message/features/auth/screens/login_screen.dart';
 import 'package:message/features/auth/screens/register_screen.dart';
-import 'package:message/features/auth/services/auth_services.dart';
 import 'package:message/features/auth/services/db_auth_service.dart';
-import 'package:message/features/auth/services/fake_auth_service.dart';
 import 'package:message/features/auth/state/auth_state.dart';
 import 'package:message/features/chat/controllers/chat_controller.dart';
 import 'package:message/features/chat/services/db_chat_services.dart';
-import 'package:message/features/chat/services/date_time_managing_service.dart';
+import 'package:message/features/chat/state/chat_screen_state.dart';
 import 'package:message/features/home/controllers/home_screen_controller.dart';
 import 'package:message/features/home/screens/home_screen.dart';
 import 'package:message/features/chat/screens/chat_screen.dart';
 import 'package:message/features/home/services/db_chat_list_service.dart';
-import 'package:message/features/home/services/fake_chat_list_service.dart';
 import 'package:message/features/home/state/home_screen_state.dart';
 import 'package:message/features/profile/screens/profile_screen.dart';
 import 'package:message/features/settings/screens/settings_screen.dart';
@@ -30,34 +28,52 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
 
-  final authServices =  DbAuthServices();
+  final authServices = DbAuthServices();
   final chatListServices = DbChatListServices();
   final chatServices = DbChatServices();
   final appStorage = AppStorageService();
   final socketService = SocketService();
 
-
   runApp(
     MultiProvider(
-        providers: [
-           ChangeNotifierProvider(
-            create: (_) => AuthState()
-            ),
-            ChangeNotifierProvider(
-                create: (_) => HomeScreenState()
-            ),
-            ChangeNotifierProvider(
-                create: (_) => ChatController(chatServices, appStorage, socketService)
-            ),
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthState()),
+        ChangeNotifierProvider(create: (_) => HomeScreenState()),
+        ChangeNotifierProvider(create: (_) => ChatScreenState()),
 
-
-            Provider(
-                create: (context) => HomeScreenController(chatListServices, appStorage, socketService, context.read<HomeScreenState>())
-            ),
-            Provider(create: (context) => AuthController(authServices, appStorage, appStorage, context.read<AuthState>()))
-        ],
-        child: (MyApp()),
-    )
+        Provider(
+          create: (context) => HomeScreenController(
+            chatListServices,
+            appStorage,
+            socketService,
+            context.read<HomeScreenState>(),
+          ),
+        ),
+        Provider(
+          create: (context) => AuthController(
+            authServices,
+            appStorage,
+            appStorage,
+            context.read<AuthState>(),
+          ),
+        ),
+        Provider(
+          create: (context) => ChatController(
+            chatServices,
+            appStorage,
+            context.read<ChatScreenState>(),
+          ),
+        ),
+        Provider(
+          create: (context) => SocketController(
+            context.read<HomeScreenState>(),
+            context.read<ChatScreenState>(),
+            socketService,
+          ),
+        ),
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 

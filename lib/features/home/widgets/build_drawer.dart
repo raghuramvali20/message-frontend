@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:message/core/theme/app_theme.dart';
-import 'package:message/features/home/controllers/home_screen_controller.dart';
 import 'package:message/features/home/state/home_screen_state.dart';
 import 'package:message/features/profile/screens/profile_screen.dart';
 import 'package:message/features/settings/screens/settings_screen.dart';

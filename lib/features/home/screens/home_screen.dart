@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:message/core/controllers/socket_controller.dart';
 import 'package:message/core/theme/app_theme.dart';
 import 'package:message/features/home/controllers/home_screen_controller.dart';
 import 'package:message/features/home/widgets/build_drawer.dart';
@@ -24,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
         
         await context.read<HomeScreenController>().fetchChats();
         await context.read<HomeScreenController>().initSocket();
+        context.read<SocketController>();
     });
   }
 

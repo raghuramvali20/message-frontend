@@ -6,7 +6,7 @@ class SocketService {
 
   void init(String userId) {
     socket = IO.io(
-      'http://192.168.228.133:3000',
+      'http://192.168.20.242:3000',
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .enableAutoConnect()
@@ -18,6 +18,7 @@ class SocketService {
     });
 
     socket!.on('newMessage', (data) {
+        print("socket is listening");
       onNewMessage?.call(data);
     });
   }

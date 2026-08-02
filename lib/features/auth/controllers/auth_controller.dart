@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:message/core/models/api_response.dart';
 import 'package:message/core/models/user_model.dart';
 import 'package:message/core/storage_services/storage_services.dart';
@@ -11,11 +10,6 @@ class AuthController{
     final SecureStorageService _secureStorage;
     final AuthState _state;
     AuthController(this._service, this._userStorage, this._secureStorage, this._state);
-
-    User? _user;
-    String? _token;
-    String? _error;
-    bool _loading = false;
 
     User? get user => _state.user;
     String? get error => _state.error;

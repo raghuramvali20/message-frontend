@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:message/core/models/api_response.dart';
-import 'package:message/core/models/user_model.dart';
 import 'package:message/core/services/api.dart';
 import 'package:message/core/storage_services/app_storage_services.dart';
 import 'package:message/features/chat/models/message_model.dart';
@@ -28,7 +27,6 @@ class DbChatServices implements ChatServices{
 
   Future<ApiResponse<MessageModel>> sendMessage(String message, String receiverId, String chatId)async{
 
-    User? user = await AppStorageService().loadUser(); 
     String? token = await AppStorageService().loadToken();
     Map<String, dynamic> body = {
         "messageText" : message,

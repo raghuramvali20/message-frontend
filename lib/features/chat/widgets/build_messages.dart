@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:message/core/theme/app_theme.dart';
-import 'package:message/features/chat/controllers/chat_controller.dart';
 import 'package:message/features/chat/models/message_model.dart';
+import 'package:message/features/chat/state/chat_screen_state.dart';
 import 'package:provider/provider.dart';
 
 class BuildMessages extends StatefulWidget {
@@ -18,9 +18,6 @@ class _BuildMessagesState extends State<BuildMessages> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      context.read<ChatController>().fetchMessages(widget.chatId);
-    });
   }
 
   @override
@@ -118,7 +115,7 @@ class _BuildMessagesState extends State<BuildMessages> {
 
   @override
   Widget build(BuildContext context) {
-    final payload = context.watch<ChatController>();
+    final payload = context.watch<ChatScreenState>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
 
@@ -126,15 +123,15 @@ class _BuildMessagesState extends State<BuildMessages> {
       child: ListView.builder(
         controller: _scrollController,
         padding: const EdgeInsets.all(8),
-        itemCount: payload.messages?.length ?? 0,
+        itemCount: payload.messages.length,
         itemBuilder: (context, index) {
-          final message = payload.messages![index];
+          final message = payload.messages[index];
           final isSentByMe = payload.user?.id == message.senderId;
 
           // Insert date separator when date changes
           final showDateSeparator = index == 0 ||
               message.formattedDate !=
-                  payload.messages![index - 1].formattedDate;
+                  payload.messages[index - 1].formattedDate;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

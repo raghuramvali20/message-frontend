@@ -37,7 +37,7 @@ class HomeScreenController {
     final response = await _service.fetchChats(user.id);
 
     if (response is SuccessResponse<List<ChatModel>>) {
-      final data = response.data ?? [];
+      final data = response.data;
 
       final readChats =
           data.where((chat) => (chat.unreadMessages ?? 0) == 0).toList();

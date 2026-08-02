@@ -2,7 +2,7 @@ import "package:http/http.dart" as http;
 import "dart:convert";
 
 class ApiMethods {
-  static const String baseUrl = "http://192.168.228.133:3000";
+  static const String baseUrl = "http://192.168.20.242:3000";
 
   // GET request with optional headers
   static Future<http.Response> get(String endpoint, {Map<String, String>? headers}) async {
