@@ -2,7 +2,6 @@ import 'package:message/core/models/api_response.dart';
 import 'package:message/core/storage_services/storage_services.dart';
 import 'package:message/features/chat/models/message_model.dart';
 import 'package:message/features/chat/services/chat_services.dart';
-import 'package:message/features/chat/services/date_time_managing_service.dart';
 import 'package:message/features/chat/state/chat_screen_state.dart';
 
 class ChatController{
@@ -22,13 +21,7 @@ class ChatController{
     final response = await _services.getChatsByChatId(chatId);
 
     if (response is SuccessResponse<List<MessageModel>>) {
-      _state.setMessages(response.data.map((msg) {
-        // create service with timestamp string
-        final timeAndDate = DateTimeManagingService(msg.time).convertTimeAndDate();
-        msg.formattedTime = timeAndDate.time;
-        msg.formattedDate = timeAndDate.date;
-        return msg;
-      }).toList());
+      _state.setMessages(response.data);
     } else if (response is FailureResponse<List<MessageModel>>) {
       _state.setError(response.serverMessage);
     }
@@ -41,18 +34,9 @@ class ChatController{
     String chatId,
     String receiverId,
   ) async {
-    
-    // print(messageText);
     final response = await _services.sendMessage(messageText, receiverId, chatId);
     if(response is SuccessResponse<MessageModel>){
-    // enrich with formatted values
-        MessageModel message = response.data;
-        final timeAndDate = DateTimeManagingService(message.time).convertTimeAndDate();
-        message.formattedTime = timeAndDate.time;
-        message.formattedDate = timeAndDate.date;
-        _state.addMessage(message);
+      _state.addMessage(response.data);
     }
-
-   
   }
 }

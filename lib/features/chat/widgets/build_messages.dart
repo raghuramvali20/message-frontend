@@ -13,25 +13,10 @@ class BuildMessages extends StatefulWidget {
 }
 
 class _BuildMessagesState extends State<BuildMessages> {
-  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant BuildMessages oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _scrollToBottom();
-  }
-
-  void _scrollToBottom() {
-    if (_scrollController.hasClients) {
-      _scrollController.jumpTo(
-        _scrollController.position.maxScrollExtent,
-      );
-    }
   }
 
   Widget _buildSentMessage(MessageModel message) {
@@ -66,6 +51,9 @@ class _BuildMessagesState extends State<BuildMessages> {
   }
 
   Widget _buildReceivedMessage(MessageModel message) {
+    if(mounted){
+        message.statusCode = StatusCode.seen;
+    }
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
@@ -117,21 +105,19 @@ class _BuildMessagesState extends State<BuildMessages> {
   Widget build(BuildContext context) {
     final payload = context.watch<ChatScreenState>();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
-
     return Expanded(
       child: ListView.builder(
-        controller: _scrollController,
         padding: const EdgeInsets.all(8),
+        reverse: true,
         itemCount: payload.messages.length,
         itemBuilder: (context, index) {
-          final message = payload.messages[index];
+          final message = payload.messages[payload.messages.length - 1 - index];
           final isSentByMe = payload.user?.id == message.senderId;
 
           // Insert date separator when date changes
-          final showDateSeparator = index == 0 ||
+          final showDateSeparator = payload.messages.length - 1 - index == 0 ||
               message.formattedDate !=
-                  payload.messages[index - 1].formattedDate;
+                  payload.messages[payload.messages.length - index - 2].formattedDate;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

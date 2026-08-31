@@ -4,10 +4,12 @@ class MessageModel {
   String receiverId;
   String messageText;
   String time;
-  StatusCode statusCode; // ✅ No longer hardcoded
-  bool edited; // ✅ No longer hardcoded
+  StatusCode statusCode;
+  bool edited;
   String? formattedTime;
   String? formattedDate;
+  String? dateGroup;
+  String? displayLabel;
 
   MessageModel({
     required this.chatId,
@@ -15,23 +17,27 @@ class MessageModel {
     required this.receiverId,
     required this.messageText,
     required this.time,
-    this.statusCode = StatusCode.delivered, // ✅ Default value
-    this.edited = false, // ✅ Default value
+    this.statusCode = StatusCode.sent,
+    this.edited = false,
     this.formattedTime,
-    this.formattedDate
+    this.formattedDate,
+    this.dateGroup,
+    this.displayLabel,
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
     return MessageModel(
       chatId: json["chatId"] ?? "",
-      senderId: json["senderId"],
-      receiverId: json["receiverId"],
-      messageText: json["messageText"],
-      time: json["time"],
-      statusCode: _statusFromString(
-        json["status"] ?? "delivered",
-      ), // ✅ Parse from backend
-      edited: json["edited"] ?? false, // ✅ Parse from backend
+      senderId: json["senderId"] ?? "",
+      receiverId: json["receiverId"] ?? "",
+      messageText: json["messageText"] ?? "",
+      time: json["time"] ?? "",
+      statusCode: _statusFromString(json["status"] ?? "sent"),
+      edited: json["edited"] ?? false,
+      formattedTime: json["formattedTime"],
+      formattedDate: json["formattedDate"],
+      dateGroup: json["dateGroup"],
+      displayLabel: json["displayLabel"],
     );
   }
 
@@ -42,8 +48,12 @@ class MessageModel {
       "receiverId": receiverId,
       "messageText": messageText,
       "time": time,
-      "status": statusCode.name, // enum → string
+      "status": statusCode.name,
       "edited": edited,
+      "formattedTime": formattedTime,
+      "formattedDate": formattedDate,
+      "dateGroup": dateGroup,
+      "displayLabel": displayLabel,
     };
   }
 
@@ -51,9 +61,9 @@ class MessageModel {
     try {
       return StatusCode.values.byName(status!);
     } catch (_) {
-      return StatusCode.delivered; // fallback
+      return StatusCode.sent;
     }
   }
 }
 
-enum StatusCode { sent, delivered, seen }
+enum StatusCode { sent, received, seen }

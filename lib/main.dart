@@ -16,6 +16,7 @@ import 'package:message/features/chat/controllers/chat_controller.dart';
 import 'package:message/features/chat/services/db_chat_services.dart';
 import 'package:message/features/chat/state/chat_screen_state.dart';
 import 'package:message/features/home/controllers/home_screen_controller.dart';
+import 'package:message/features/home/screens/add_friends.dart';
 import 'package:message/features/home/screens/home_screen.dart';
 import 'package:message/features/chat/screens/chat_screen.dart';
 import 'package:message/features/home/services/db_chat_list_service.dart';
@@ -96,6 +97,7 @@ class MyApp extends StatelessWidget {
         AppConstants.routeChat: (context) => const ChatScreen(),
         AppConstants.routeProfile: (context) => const ProfileScreen(),
         AppConstants.routeSettings: (context) => const SettingsScreen(),
+        AddFriends.routeName: (context) => const AddFriends() 
       },
     );
   }

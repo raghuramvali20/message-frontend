@@ -50,37 +50,35 @@ class _ChatBuilderState extends State<ChatBuilder> {
 
     final totalChats = unreadChats.length + readChats.length;
 
-    return Expanded(
-      child: ListView.builder(
-        itemCount: totalChats,
-        itemBuilder: (context, index) {
-          final isUnread = index < unreadChats.length;
-          final chat = isUnread
-              ? unreadChats[index]
-              : readChats[index - unreadChats.length];
-
-          return ChatTile(
-            chat: chat,
-            isUnread: isUnread,
-            onTap: () {
-              debugPrint("Open chat with ${chat.chatUserName}");
-              Navigator.pushNamed(
-                context,
-                ChatScreen.routeName,
-                arguments: ChatArguments(
-                  chat.chatId,
-                  chat.chatUserId,
-                  chat.chatUserName,
-                  chat.profilePic,
-                ),
-              );
-            },
-            onLongPress: () {
-              print("long pressed ${chat.chatId}");
-            }
-          );
-        },
-      ),
+    return ListView.builder(
+      itemCount: totalChats,
+      itemBuilder: (context, index) {
+        final isUnread = index < unreadChats.length;
+        final chat = isUnread
+            ? unreadChats[index]
+            : readChats[index - unreadChats.length];
+    
+        return ChatTile(
+          chat: chat,
+          isUnread: isUnread,
+          onTap: () {
+            debugPrint("Open chat with ${chat.chatUserName}");
+            Navigator.pushNamed(
+              context,
+              ChatScreen.routeName,
+              arguments: ChatArguments(
+                chat.chatId,
+                chat.chatUserId,
+                chat.chatUserName,
+                chat.profilePic,
+              ),
+            );
+          },
+          onLongPress: () {
+            print("long pressed ${chat.chatId}");
+          }
+        );
+      },
     );
   }
 }

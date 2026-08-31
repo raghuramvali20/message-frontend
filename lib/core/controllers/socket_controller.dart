@@ -1,6 +1,5 @@
 import 'package:message/core/services/socket_services.dart';
 import 'package:message/features/chat/models/message_model.dart';
-import 'package:message/features/chat/services/date_time_managing_service.dart';
 import 'package:message/features/chat/state/chat_screen_state.dart';
 import 'package:message/features/home/state/home_screen_state.dart';
 
@@ -24,11 +23,7 @@ class SocketController {
     if (payload is! Map) return;
 
     final message = MessageModel.fromJson(Map<String, dynamic>.from(payload));
-    final timeAndDate = DateTimeManagingService(
-      message.time,
-    ).convertTimeAndDate();
-    message.formattedTime = timeAndDate.time;
-    message.formattedDate = timeAndDate.date;
+    message.statusCode = StatusCode.received;
 
     if (_chatScreenState.activeChatId == message.chatId) {
       _chatScreenState.addMessage(message);

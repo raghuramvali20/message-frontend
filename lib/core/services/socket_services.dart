@@ -6,7 +6,7 @@ class SocketService {
 
   void init(String userId) {
     socket = IO.io(
-      'http://192.168.20.242:3000',
+      'http://10.134.226.90:3000',
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .enableAutoConnect()

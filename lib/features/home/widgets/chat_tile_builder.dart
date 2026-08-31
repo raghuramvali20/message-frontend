@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:message/core/theme/app_theme.dart';
-import 'package:message/features/chat/services/date_time_managing_service.dart';
 import 'package:message/features/home/models/chat_list_model.dart';
 
 class ChatTile extends StatelessWidget {
@@ -19,6 +18,8 @@ class ChatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final timeLabel = chat.formattedDate ?? chat.displayLabel ?? 'Recently';
+
     return Card(
       child: InkWell(
         onTap: onTap,
@@ -32,9 +33,15 @@ class ChatTile extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold)),
           subtitle: Text(chat.previewChat),
           trailing: isUnread
-              ? _UnreadBadge(count: chat.unreadMessages, time: chat.lastUpdate)
-              : Text(DateTimeManagingService(chat.lastUpdate.toString()).convertTimeAndDate().date,
-                  style: const TextStyle(color: Colors.grey, fontSize: 12)),
+              ? _UnreadBadge(
+                  count: chat.unreadMessages,
+                  time: chat.formattedTime ?? 'Now',
+                  dateLabel: timeLabel,
+                )
+              : Text(
+                  timeLabel,
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                ),
         ),
       ),
     );
@@ -43,9 +50,10 @@ class ChatTile extends StatelessWidget {
 
 class _UnreadBadge extends StatelessWidget {
   final int? count;
-  final DateTime time;
+  final String time;
+  final String dateLabel;
 
-  const _UnreadBadge({this.count, required this.time});
+  const _UnreadBadge({this.count, required this.time, required this.dateLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +77,10 @@ class _UnreadBadge extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Text(time.toString(),
-            style: const TextStyle(color: Colors.grey, fontSize: 12)),
+        Text(
+          '$dateLabel $time',
+          style: const TextStyle(color: Colors.grey, fontSize: 12),
+        ),
       ],
     );
   }

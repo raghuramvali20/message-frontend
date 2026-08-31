@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:message/core/controllers/socket_controller.dart';
 import 'package:message/core/theme/app_theme.dart';
 import 'package:message/features/home/controllers/home_screen_controller.dart';
+import 'package:message/features/home/screens/add_friends.dart';
 import 'package:message/features/home/widgets/build_drawer.dart';
 import 'package:message/features/home/widgets/chat_builder.dart';
 import 'package:message/features/home/widgets/search_bar_builder.dart';
@@ -22,7 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     Future.microtask(() async{
-        
         await context.read<HomeScreenController>().fetchChats();
         await context.read<HomeScreenController>().initSocket();
         context.read<SocketController>();
@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Column(
             children: [
                 const SearchBarBuilder(),
-                const Expanded(flex: 1, child: ChatBuilder()),
+                Expanded(child: ChatBuilder())
             ],
         ),
         floatingActionButton: Container(
@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20)),
               color: AppColors.primary,
           ),
-            child: IconButton(onPressed: (){print("clicked");}, icon: Icon(Icons.add, color: AppColors.background,))
+            child: IconButton(onPressed: (){Navigator.pushNamed(context, AddFriends.routeName);}, icon: Icon(Icons.add, color: AppColors.background,))
             ),
     );
   }
