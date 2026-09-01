@@ -42,20 +42,54 @@ class HomeScreenState extends ChangeNotifier {
   void updateChatPreview({
     required String chatId,
     required String messageText,
+    DateTime? updatedAt,
   }) {
+    final timestamp = updatedAt ?? DateTime.now();
+
     for (final chat in _readChatList) {
       if (chat.chatId == chatId) {
         chat.previewChat = messageText;
+        chat.lastUpdate = timestamp;
+        chat.formattedDate = _formatDate(timestamp);
+        chat.formattedTime = _formatTime(timestamp);
       }
     }
 
     for (final chat in _unreadChatList) {
       if (chat.chatId == chatId) {
         chat.previewChat = messageText;
+        chat.lastUpdate = timestamp;
+        chat.formattedDate = _formatDate(timestamp);
+        chat.formattedTime = _formatTime(timestamp);
       }
     }
 
     notifyListeners();
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final target = DateTime(date.year, date.month, date.day);
+
+    if (target == today) {
+      return 'Today';
+    }
+
+    final yesterday = today.subtract(const Duration(days: 1));
+    if (target == yesterday) {
+      return 'Yesterday';
+    }
+
+    return '${date.day}/${date.month}/${date.year}';
+  }
+
+  String _formatTime(DateTime date) {
+    final hour = date.hour;
+    final minute = date.minute.toString().padLeft(2, '0');
+    final suffix = hour >= 12 ? 'PM' : 'AM';
+    final formattedHour = hour % 12 == 0 ? 12 : hour % 12;
+    return '$formattedHour:$minute $suffix';
   }
 
   void reset() {

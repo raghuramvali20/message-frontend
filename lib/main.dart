@@ -63,6 +63,7 @@ void main() async {
             chatServices,
             appStorage,
             context.read<ChatScreenState>(),
+            context.read<HomeScreenState>(),
           ),
         ),
         Provider(

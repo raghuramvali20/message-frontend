@@ -3,13 +3,15 @@ import 'package:message/core/storage_services/storage_services.dart';
 import 'package:message/features/chat/models/message_model.dart';
 import 'package:message/features/chat/services/chat_services.dart';
 import 'package:message/features/chat/state/chat_screen_state.dart';
+import 'package:message/features/home/state/home_screen_state.dart';
 
 class ChatController{
   final ChatServices _services;
   final UserStorageService _userStorage;
   final ChatScreenState _state;
+  final HomeScreenState _homeScreenState;
 
-  ChatController(this._services, this._userStorage,  this._state);
+  ChatController(this._services, this._userStorage, this._state, this._homeScreenState);
 
   Future<void> fetchMessages(String chatId) async {
     _state.setActiveChatId(chatId);
@@ -35,8 +37,15 @@ class ChatController{
     String receiverId,
   ) async {
     final response = await _services.sendMessage(messageText, receiverId, chatId);
-    if(response is SuccessResponse<MessageModel>){
+    if (response is SuccessResponse<MessageModel>) {
       _state.addMessage(response.data);
+
+      final sentAt = DateTime.tryParse(response.data.time) ?? DateTime.now();
+      _homeScreenState.updateChatPreview(
+        chatId: chatId,
+        messageText: response.data.messageText,
+        updatedAt: sentAt,
+      );
     }
   }
 }

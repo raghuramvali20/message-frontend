@@ -28,6 +28,12 @@ class SocketController {
     if (_chatScreenState.activeChatId == message.chatId) {
       _chatScreenState.addMessage(message);
     }
-    _homeScreenState.updateChatPreview(chatId: message.chatId, messageText: message.messageText);
+
+    final updatedAt = DateTime.tryParse(message.time) ?? DateTime.now();
+    _homeScreenState.updateChatPreview(
+      chatId: message.chatId,
+      messageText: message.messageText,
+      updatedAt: updatedAt,
+    );
   }
 }
