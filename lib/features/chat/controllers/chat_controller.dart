@@ -15,6 +15,7 @@ class ChatController{
 
   Future<void> fetchMessages(String chatId) async {
     _state.setActiveChatId(chatId);
+    _homeScreenState.markChatAsRead(chatId);
     _state.setLoading(true);
     _state.setError(null);
 

@@ -9,7 +9,7 @@ class ChatModel {
   String? formattedDate;
   String? dateGroup;
   String? displayLabel;
-  int? unreadMessages;
+  bool hasUnread;
 
   ChatModel(
     this.chatId,
@@ -18,7 +18,7 @@ class ChatModel {
     this.chatUserId,
     this.previewChat,
     this.lastUpdate, [
-    this.unreadMessages = 0,
+    this.hasUnread = false,
     this.formattedTime,
     this.formattedDate,
     this.dateGroup,
@@ -27,6 +27,18 @@ class ChatModel {
 
   factory ChatModel.fromJson(Map<String, dynamic> json) {
     final lastUpdateValue = json["lastUpdate"] ?? DateTime.now().toIso8601String();
+    final rawUnread = json["hasUnread"] ?? json["unreadMessages"] ?? false;
+    final bool unreadValue;
+
+    if (rawUnread is bool) {
+      unreadValue = rawUnread;
+    } else if (rawUnread is num) {
+      unreadValue = rawUnread > 0;
+    } else if (rawUnread is String) {
+      unreadValue = rawUnread.toLowerCase() == 'true' || int.tryParse(rawUnread) != null && int.parse(rawUnread) > 0;
+    } else {
+      unreadValue = false;
+    }
 
     return ChatModel(
       json["id"] ?? json["_id"] ?? " ",
@@ -35,7 +47,7 @@ class ChatModel {
       json["receiverId"] ?? json["_id"] ?? " ",
       json["preview"] ?? " ",
       lastUpdateValue is String ? DateTime.tryParse(lastUpdateValue) : lastUpdateValue,
-      0,
+      unreadValue,
       json["formattedTime"],
       json["formattedDate"],
       json["dateGroup"],

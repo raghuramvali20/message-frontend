@@ -25,15 +25,19 @@ class SocketController {
     final message = MessageModel.fromJson(Map<String, dynamic>.from(payload));
     message.statusCode = StatusCode.received;
 
-    if (_chatScreenState.activeChatId == message.chatId) {
-      _chatScreenState.addMessage(message);
-    }
+    final isChatActive = _chatScreenState.activeChatId == message.chatId;
 
-    final updatedAt = DateTime.tryParse(message.time) ?? DateTime.now();
-    _homeScreenState.updateChatPreview(
-      chatId: message.chatId,
-      messageText: message.messageText,
-      updatedAt: updatedAt,
-    );
+    if (isChatActive) {
+      _chatScreenState.addMessage(message);
+      _homeScreenState.markChatAsRead(message.chatId);
+    } else {
+      final updatedAt = DateTime.tryParse(message.time) ?? DateTime.now();
+      _homeScreenState.updateChatPreview(
+        chatId: message.chatId,
+        messageText: message.messageText,
+        updatedAt: updatedAt,
+        markAsUnread: true,
+      );
+    }
   }
 }

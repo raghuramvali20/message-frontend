@@ -34,7 +34,6 @@ class ChatTile extends StatelessWidget {
           subtitle: Text(chat.previewChat),
           trailing: isUnread
               ? _UnreadBadge(
-                  count: chat.unreadMessages,
                   time: chat.formattedTime ?? 'Now',
                   dateLabel: timeLabel,
                 )
@@ -49,11 +48,10 @@ class ChatTile extends StatelessWidget {
 }
 
 class _UnreadBadge extends StatelessWidget {
-  final int? count;
   final String time;
   final String dateLabel;
 
-  const _UnreadBadge({this.count, required this.time, required this.dateLabel});
+  const _UnreadBadge({required this.time, required this.dateLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -62,21 +60,14 @@ class _UnreadBadge extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          width: 12,
+          height: 12,
           decoration: BoxDecoration(
             color: AppColors.primaryLight,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            (count ?? 0).toString(),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
+            shape: BoxShape.circle,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         Text(
           '$dateLabel $time',
           style: const TextStyle(color: Colors.grey, fontSize: 12),

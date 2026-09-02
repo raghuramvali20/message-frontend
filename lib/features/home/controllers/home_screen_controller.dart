@@ -38,13 +38,7 @@ class HomeScreenController {
 
     if (response is SuccessResponse<List<ChatModel>>) {
       final data = response.data;
-
-      final readChats =
-          data.where((chat) => (chat.unreadMessages ?? 0) == 0).toList();
-      final unreadChats =
-          data.where((chat) => (chat.unreadMessages ?? 0) > 0).toList();
-
-      _state.setChats(readChatList: readChats, unreadChatList: unreadChats);
+      _state.setAllChats(data);
     } else if (response is FailureResponse<List<ChatModel>>) {
       _state.setError(response.serverMessage);
       _state.setChats(readChatList: [], unreadChatList: []);

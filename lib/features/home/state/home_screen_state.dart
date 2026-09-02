@@ -4,14 +4,14 @@ import 'package:message/features/home/models/chat_list_model.dart';
 
 class HomeScreenState extends ChangeNotifier {
   User? _user;
-  List<ChatModel> _readChatList = [];
-  List<ChatModel> _unreadChatList = [];
+  final List<ChatModel> _chats = [];
   String? _error;
   bool _loading = false;
 
   User? get user => _user;
-  List<ChatModel> get readChatList => _readChatList;
-  List<ChatModel> get unreadChatList => _unreadChatList;
+  List<ChatModel> get chats => List.unmodifiable(_chats);
+  List<ChatModel> get readChatList => _chats.where((chat) => !chat.hasUnread).toList();
+  List<ChatModel> get unreadChatList => _chats.where((chat) => chat.hasUnread).toList();
   String? get error => _error;
   bool get loading => _loading;
 
@@ -34,8 +34,18 @@ class HomeScreenState extends ChangeNotifier {
     required List<ChatModel> readChatList,
     required List<ChatModel> unreadChatList,
   }) {
-    _readChatList = readChatList;
-    _unreadChatList = unreadChatList;
+    _chats
+      ..clear()
+      ..addAll([...readChatList, ...unreadChatList]);
+    _sortChats();
+    notifyListeners();
+  }
+
+  void setAllChats(List<ChatModel> chats) {
+    _chats
+      ..clear()
+      ..addAll(chats);
+    _sortChats();
     notifyListeners();
   }
 
@@ -43,28 +53,54 @@ class HomeScreenState extends ChangeNotifier {
     required String chatId,
     required String messageText,
     DateTime? updatedAt,
+    bool markAsUnread = false,
   }) {
     final timestamp = updatedAt ?? DateTime.now();
+    final chat = _findChatById(chatId);
 
-    for (final chat in _readChatList) {
-      if (chat.chatId == chatId) {
-        chat.previewChat = messageText;
-        chat.lastUpdate = timestamp;
-        chat.formattedDate = _formatDate(timestamp);
-        chat.formattedTime = _formatTime(timestamp);
-      }
-    }
+    if (chat == null) return;
 
-    for (final chat in _unreadChatList) {
-      if (chat.chatId == chatId) {
-        chat.previewChat = messageText;
-        chat.lastUpdate = timestamp;
-        chat.formattedDate = _formatDate(timestamp);
-        chat.formattedTime = _formatTime(timestamp);
-      }
-    }
+    chat.previewChat = messageText;
+    chat.lastUpdate = timestamp;
+    chat.formattedDate = _formatDate(timestamp);
+    chat.formattedTime = _formatTime(timestamp);
+    chat.hasUnread = markAsUnread;
 
+    _sortChats();
     notifyListeners();
+  }
+
+  void markChatAsRead(String chatId) {
+    final chat = _findChatById(chatId);
+    if (chat == null) return;
+
+    chat.hasUnread = false;
+    _sortChats();
+    notifyListeners();
+  }
+
+  void markChatAsUnread(String chatId) {
+    final chat = _findChatById(chatId);
+    if (chat == null) return;
+
+    chat.hasUnread = true;
+    _sortChats();
+    notifyListeners();
+  }
+
+  ChatModel? _findChatById(String chatId) {
+    for (final chat in _chats) {
+      if (chat.chatId == chatId) return chat;
+    }
+    return null;
+  }
+
+  void _sortChats() {
+    _chats.sort((a, b) {
+      final aTime = a.lastUpdate ?? DateTime.fromMillisecondsSinceEpoch(0);
+      final bTime = b.lastUpdate ?? DateTime.fromMillisecondsSinceEpoch(0);
+      return bTime.compareTo(aTime);
+    });
   }
 
   String _formatDate(DateTime date) {
@@ -94,8 +130,7 @@ class HomeScreenState extends ChangeNotifier {
 
   void reset() {
     _error = null;
-    _readChatList = [];
-    _unreadChatList = [];
+    _chats.clear();
     notifyListeners();
   }
 }
