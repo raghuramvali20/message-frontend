@@ -19,6 +19,17 @@ class _BuildMessagesState extends State<BuildMessages> {
     super.initState();
   }
 
+  String _statusLabel(StatusCode status) {
+    switch (status) {
+      case StatusCode.sent:
+        return 'Sent';
+      case StatusCode.seen:
+        return 'Seen';
+      case StatusCode.received:
+        return 'Received';
+    }
+  }
+
   Widget _buildSentMessage(MessageModel message) {
     return Align(
       alignment: Alignment.centerRight,
@@ -36,13 +47,26 @@ class _BuildMessagesState extends State<BuildMessages> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(message.messageText, style: AppTypography.bodyLg),
-            SizedBox(height: 4),
-            Text(
-              message.formattedTime ?? "",
-              style: AppTypography.bodySm.copyWith(
-                fontSize: 12,
-                color: Colors.white70,
-              ),
+            const SizedBox(height: 4),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  message.formattedTime ?? "",
+                  style: AppTypography.bodySm.copyWith(
+                    fontSize: 12,
+                    color: Colors.white70,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  _statusLabel(message.statusCode),
+                  style: AppTypography.bodySm.copyWith(
+                    fontSize: 10,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -51,9 +75,6 @@ class _BuildMessagesState extends State<BuildMessages> {
   }
 
   Widget _buildReceivedMessage(MessageModel message) {
-    if(mounted){
-        message.statusCode = StatusCode.seen;
-    }
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
@@ -70,7 +91,7 @@ class _BuildMessagesState extends State<BuildMessages> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(message.messageText, style: AppTypography.bodyLg),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               message.formattedTime ?? "",
               style: AppTypography.bodySm.copyWith(

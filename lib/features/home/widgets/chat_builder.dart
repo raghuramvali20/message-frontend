@@ -15,7 +15,7 @@ class ChatBuilder extends StatefulWidget {
 
 class _ChatBuilderState extends State<ChatBuilder> {
   bool _hasShownError = false;
- // final Set<String> _selectedChats = {}; // track selected chatIds
+  // final Set<String> _selectedChats = {}; // track selected chatIds
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ class _ChatBuilderState extends State<ChatBuilder> {
         final chat = isUnread
             ? unreadChats[index]
             : readChats[index - unreadChats.length];
-    
+
         return ChatTile(
           chat: chat,
           isUnread: isUnread,
@@ -71,12 +71,14 @@ class _ChatBuilderState extends State<ChatBuilder> {
                 chat.chatUserId,
                 chat.chatUserName,
                 chat.profilePic,
+                online: chat.online,
+                lastSeen: chat.lastSeen,
               ),
             );
           },
           onLongPress: () {
             print("long pressed ${chat.chatId}");
-          }
+          },
         );
       },
     );

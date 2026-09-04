@@ -64,6 +64,7 @@ void main() async {
             appStorage,
             context.read<ChatScreenState>(),
             context.read<HomeScreenState>(),
+            socketService,
           ),
         ),
         Provider(

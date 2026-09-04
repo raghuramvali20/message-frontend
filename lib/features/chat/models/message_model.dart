@@ -1,4 +1,5 @@
 class MessageModel {
+  String? id;
   String chatId;
   String senderId;
   String receiverId;
@@ -12,6 +13,7 @@ class MessageModel {
   String? displayLabel;
 
   MessageModel({
+    this.id,
     required this.chatId,
     required this.senderId,
     required this.receiverId,
@@ -27,6 +29,7 @@ class MessageModel {
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
     return MessageModel(
+      id: json["_id"] ?? json["id"],
       chatId: json["chatId"] ?? "",
       senderId: json["senderId"] ?? "",
       receiverId: json["receiverId"] ?? "",
@@ -43,6 +46,7 @@ class MessageModel {
 
   Map<String, dynamic> toJson() {
     return {
+      "_id": id,
       "chatId": chatId,
       "senderId": senderId,
       "receiverId": receiverId,
@@ -58,11 +62,19 @@ class MessageModel {
   }
 
   static StatusCode _statusFromString(String? status) {
-    try {
-      return StatusCode.values.byName(status!);
-    } catch (_) {
+    final normalized = (status ?? 'sent').toLowerCase();
+
+    if (normalized == 'received') {
+      return StatusCode.received;
+    }
+    if (normalized == 'seen') {
+      return StatusCode.seen;
+    }
+    if (normalized == 'sent') {
       return StatusCode.sent;
     }
+
+    return StatusCode.sent;
   }
 }
 
