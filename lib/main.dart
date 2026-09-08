@@ -16,10 +16,13 @@ import 'package:message/features/chat/controllers/chat_controller.dart';
 import 'package:message/features/chat/services/db_chat_services.dart';
 import 'package:message/features/chat/state/chat_screen_state.dart';
 import 'package:message/features/home/controllers/home_screen_controller.dart';
+import 'package:message/features/home/controllers/add_friends_controller.dart';
 import 'package:message/features/home/screens/add_friends.dart';
 import 'package:message/features/home/screens/home_screen.dart';
 import 'package:message/features/chat/screens/chat_screen.dart';
 import 'package:message/features/home/services/db_chat_list_service.dart';
+import 'package:message/features/home/services/db_users_search_service.dart';
+import 'package:message/features/home/state/add_friends_state.dart';
 import 'package:message/features/home/state/home_screen_state.dart';
 import 'package:message/features/profile/screens/profile_screen.dart';
 import 'package:message/features/settings/screens/settings_screen.dart';
@@ -31,6 +34,7 @@ void main() async {
 
   final authServices = DbAuthServices();
   final chatListServices = DbChatListServices();
+  final usersSearchService = DbUsersSearchService();
   final chatServices = DbChatServices();
   final appStorage = AppStorageService();
   final socketService = SocketService();
@@ -41,6 +45,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AuthState()),
         ChangeNotifierProvider(create: (_) => HomeScreenState()),
         ChangeNotifierProvider(create: (_) => ChatScreenState()),
+        ChangeNotifierProvider(create: (_) => AddFriendsState()),
 
         Provider(
           create: (context) => HomeScreenController(
@@ -48,6 +53,12 @@ void main() async {
             appStorage,
             socketService,
             context.read<HomeScreenState>(),
+          ),
+        ),
+        Provider(
+          create: (context) => AddFriendsController(
+            usersSearchService,
+            context.read<AddFriendsState>(),
           ),
         ),
         Provider(
@@ -85,7 +96,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: 'Message',
       theme: AppTheme.lightTheme,
@@ -99,9 +109,8 @@ class MyApp extends StatelessWidget {
         AppConstants.routeChat: (context) => const ChatScreen(),
         AppConstants.routeProfile: (context) => const ProfileScreen(),
         AppConstants.routeSettings: (context) => const SettingsScreen(),
-        AddFriends.routeName: (context) => const AddFriends() 
+        AddFriends.routeName: (context) => const AddFriends(),
       },
     );
   }
 }
-

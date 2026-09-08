@@ -8,31 +8,34 @@ import 'package:message/features/home/services/users_search_service.dart';
 
 class DbUsersSearchService extends UsersSearchService {
   @override
-  Future<ApiResponse> searchUsers(String searchString) async {
+  Future<ApiResponse<List<User>>> searchUsers(String searchString) async {
     try {
-      final token = AppStorageService().loadToken();
+      final token = await AppStorageService().loadToken();
       final response = await ApiMethods.get(
-        "user/search/$searchString",
+        "/user/search/${Uri.encodeComponent(searchString)}",
         headers: {'Authorization': 'Bearer $token'},
       );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        
+
         // Parse the list of users from the response
         final List<dynamic> usersJson = data['users'] ?? [];
         final List<User> usersList = usersJson
             .map((userJson) => User.fromJson(userJson as Map<String, dynamic>))
             .toList();
 
-        return SuccessResponse(usersList);
+        return SuccessResponse<List<User>>(usersList);
       } else {
         final Map<String, dynamic> errorData = jsonDecode(response.body);
-        final errorMessage = errorData['message'] ?? 'Failed to search users';
-        return FailureResponse(errorMessage);
+        final errorMessage =
+            errorData['serverMessage'] ??
+            errorData['message'] ??
+            'Failed to search users';
+        return FailureResponse<List<User>>(errorMessage.toString());
       }
     } catch (e) {
-      return FailureResponse('Error: ${e.toString()}');
+      return FailureResponse<List<User>>('Error: ${e.toString()}');
     }
   }
 }
