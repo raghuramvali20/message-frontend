@@ -12,7 +12,7 @@ class SocketService {
 
   void init(String userId) {
     socket = IO.io(
-      'http://10.134.226.90:3000',
+      'http://192.168.18.72:3000',
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .enableAutoConnect()
@@ -37,6 +37,7 @@ class SocketService {
 
     socket!.on('user_online', (data) {
       onUserOnline?.call(data);
+      print(data);
     });
 
     socket!.on('user_offline', (data) {

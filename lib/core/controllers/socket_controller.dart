@@ -42,6 +42,11 @@ class SocketController {
         : rawLastSeen is DateTime
         ? rawLastSeen
         : null;
+    _homeScreenState.updateChatPresence(
+      userId,
+      online: online,
+      lastSeen: lastSeen,
+    );
     _chatScreenState.setPresence(userId, online: online, lastSeen: lastSeen);
   }
 

@@ -88,6 +88,22 @@ class HomeScreenState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateChatPresence(
+    String userId, {
+    required bool online,
+    DateTime? lastSeen,
+  }) {
+    final chat = _chats.cast<ChatModel?>().firstWhere(
+      (chat) => chat?.chatUserId == userId,
+      orElse: () => null,
+    );
+    if (chat == null) return;
+
+    chat.online = online;
+    chat.lastSeen = lastSeen;
+    notifyListeners();
+  }
+
   ChatModel? _findChatById(String chatId) {
     for (final chat in _chats) {
       if (chat.chatId == chatId) return chat;
