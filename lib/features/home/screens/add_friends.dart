@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:message/core/models/user_model.dart';
 import 'package:message/core/theme/app_theme.dart';
 import 'package:message/features/home/controllers/add_friends_controller.dart';
 import 'package:message/features/home/state/add_friends_state.dart';
+import 'package:message/features/home/widgets/empty_search_state.dart';
+import 'package:message/features/home/widgets/user_result_tile.dart';
 import 'package:message/core/widgets/snack_bar_helper.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
@@ -81,7 +82,7 @@ class _AddFriendsState extends State<AddFriends> {
               child: state.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : state.usersList.isEmpty
-                  ? _EmptySearchState(
+                  ? EmptySearchState(
                       hasQuery: _searchController.text.trim().isNotEmpty,
                     )
                   : ListView.separated(
@@ -89,45 +90,11 @@ class _AddFriendsState extends State<AddFriends> {
                       separatorBuilder: (_, __) =>
                           const SizedBox(height: AppSpacing.sm),
                       itemBuilder: (context, index) =>
-                          _UserResultTile(user: state.usersList[index]),
+                          UserResultTile(user: state.usersList[index]),
                     ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _EmptySearchState extends StatelessWidget {
-  final bool hasQuery;
-
-  const _EmptySearchState({required this.hasQuery});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        hasQuery ? 'No users found' : 'Search for a username to find people',
-        style: AppTypography.bodyMd,
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-}
-
-class _UserResultTile extends StatelessWidget {
-  final User user;
-
-  const _UserResultTile({required this.user});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: const CircleAvatar(child: Icon(Icons.person)),
-        title: Text(user.userName, style: AppTypography.titleSm),
-        subtitle: Text(user.email, style: AppTypography.bodySm),
       ),
     );
   }
