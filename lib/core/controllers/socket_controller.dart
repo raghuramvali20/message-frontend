@@ -1,6 +1,7 @@
 import 'package:message/core/services/socket_services.dart';
 import 'package:message/features/chat/models/message_model.dart';
 import 'package:message/features/chat/state/chat_screen_state.dart';
+import 'package:message/features/home/models/chat_list_model.dart';
 import 'package:message/features/home/state/home_screen_state.dart';
 
 class SocketController {
@@ -14,6 +15,7 @@ class SocketController {
     this._socketService,
   ) {
     _socketService.onNewMessage = _handleNewMessage;
+    _socketService.onMessageRequest = _handleMessageRequest;
     _socketService.onMessageReceived = _handleMessageReceived;
     _socketService.onMessageSeen = _handleMessageSeen;
     _socketService.onUserOnline = _handleUserOnline;
@@ -94,6 +96,12 @@ class SocketController {
     final payload = data is Map ? data['serverMessage'] ?? data : data;
     if (payload is! Map) return;
 
+    if (data is Map && data['chat'] is Map) {
+      _homeScreenState.addOrUpdateChat(
+        ChatModel.fromJson(Map<String, dynamic>.from(data['chat'])),
+      );
+    }
+
     final message = MessageModel.fromJson(Map<String, dynamic>.from(payload));
     message.statusCode = StatusCode.received;
 
@@ -113,5 +121,12 @@ class SocketController {
     } else {
       _homeScreenState.markChatAsUnread(message.chatId);
     }
+  }
+
+  void _handleMessageRequest(dynamic data) {
+    if (data is! Map) return;
+    _homeScreenState.setPendingChatRequest(
+      Map<String, dynamic>.from(data),
+    );
   }
 }

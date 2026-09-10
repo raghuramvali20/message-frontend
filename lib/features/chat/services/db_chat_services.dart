@@ -6,7 +6,7 @@ import 'package:message/features/chat/models/message_model.dart';
 import 'package:message/features/chat/services/chat_services.dart';
 
 class DbChatServices implements ChatServices{
-    @override
+  @override
   Future<ApiResponse<List<MessageModel>>> getChatsByChatId(String chatId) async{
 
     String? token = await AppStorageService().loadToken(); 
@@ -21,10 +21,13 @@ class DbChatServices implements ChatServices{
         List<MessageModel> messages = messagesFromResponse.map((m) => MessageModel.fromJson(m)).toList();
         return SuccessResponse<List<MessageModel>>(messages);
     }else{
-        return FailureResponse(body["serverMessage"]);
+        return FailureResponse(
+          body["serverMessage"] ?? body["message"] ?? "Unable to load messages",
+        );
     }
   }
 
+  @override
   Future<ApiResponse<MessageModel>> sendMessage(String message, String receiverId, String chatId)async{
 
     String? token = await AppStorageService().loadToken();
@@ -33,12 +36,13 @@ class DbChatServices implements ChatServices{
         "time": DateTime.now().toUtc().toIso8601String()
     };
     final response = await ApiMethods.post("/message/send/$receiverId", body, headers: {"Authorization": "Bearer $token"});
-    print(response.body);
     final result = jsonDecode(response.body);
     if(response.statusCode == 201){
         return SuccessResponse<MessageModel>(MessageModel.fromJson(result["messageDoc"]));
     }else{
-        return FailureResponse(result["serverMessage"]);
+        return FailureResponse(
+          result["serverMessage"] ?? result["message"] ?? "Unable to send message",
+        );
     }
     
   }

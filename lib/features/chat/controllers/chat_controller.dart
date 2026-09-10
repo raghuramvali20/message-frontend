@@ -70,6 +70,8 @@ class ChatController{
         messageText: response.data.messageText,
         updatedAt: sentAt,
       );
+    } else if (response is FailureResponse<MessageModel>) {
+      _state.setError(response.serverMessage);
     }
   }
 }

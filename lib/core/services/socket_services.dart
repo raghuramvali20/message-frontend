@@ -1,8 +1,10 @@
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:message/core/config/app_environment.dart';
 
 class SocketService {
   IO.Socket? socket;
   void Function(dynamic data)? onNewMessage;
+  void Function(dynamic data)? onMessageRequest;
   void Function(dynamic data)? onMessageReceived;
   void Function(dynamic data)? onMessageSeen;
   void Function(dynamic data)? onUserOnline;
@@ -12,7 +14,7 @@ class SocketService {
 
   void init(String userId) {
     socket = IO.io(
-      'http://192.168.18.72:3000',
+      AppEnvironment.socketUrl,
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .enableAutoConnect()
@@ -25,6 +27,10 @@ class SocketService {
 
     socket!.on('newMessage', (data) {
       onNewMessage?.call(data);
+    });
+
+    socket!.on('message_request', (data) {
+      onMessageRequest?.call(data);
     });
 
     socket!.on('message_received', (data) {

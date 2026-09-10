@@ -1,8 +1,9 @@
 import "package:http/http.dart" as http;
 import "dart:convert";
+import "package:message/core/config/app_environment.dart";
 
 class ApiMethods {
-  static const String baseUrl = "http://192.168.18.72:3000";
+  static const String baseUrl = AppEnvironment.apiBaseUrl;
 
   // GET request with optional headers
   static Future<http.Response> get(String endpoint, {Map<String, String>? headers}) async {

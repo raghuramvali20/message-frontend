@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:message/core/widgets/snack_bar_helper.dart';
-import 'package:message/features/chat/models/chat_arguments.dart';
-import 'package:message/features/chat/screens/chat_screen.dart';
+import 'package:message/features/home/services/chat_navigation_service.dart';
 import 'package:message/features/home/state/home_screen_state.dart';
 import 'package:message/features/home/widgets/chat_tile_builder.dart';
 import 'package:provider/provider.dart';
@@ -63,18 +62,7 @@ class _ChatBuilderState extends State<ChatBuilder> {
           isUnread: isUnread,
           onTap: () {
             debugPrint("Open chat with ${chat.chatUserName}");
-            Navigator.pushNamed(
-              context,
-              ChatScreen.routeName,
-              arguments: ChatArguments(
-                chat.chatId,
-                chat.chatUserId,
-                chat.chatUserName,
-                chat.profilePic,
-                online: chat.online,
-                lastSeen: chat.lastSeen,
-              ),
-            );
+            openChat(context, chat);
           },
           onLongPress: () {
             print("long pressed ${chat.chatId}");

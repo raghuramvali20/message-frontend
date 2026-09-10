@@ -7,13 +7,17 @@ class HomeScreenState extends ChangeNotifier {
   final List<ChatModel> _chats = [];
   String? _error;
   bool _loading = false;
+  Map<String, dynamic>? _pendingChatRequest;
 
   User? get user => _user;
   List<ChatModel> get chats => List.unmodifiable(_chats);
-  List<ChatModel> get readChatList => _chats.where((chat) => !chat.hasUnread).toList();
-  List<ChatModel> get unreadChatList => _chats.where((chat) => chat.hasUnread).toList();
+  List<ChatModel> get readChatList =>
+      _chats.where((chat) => !chat.hasUnread).toList();
+  List<ChatModel> get unreadChatList =>
+      _chats.where((chat) => chat.hasUnread).toList();
   String? get error => _error;
   bool get loading => _loading;
+  Map<String, dynamic>? get pendingChatRequest => _pendingChatRequest;
 
   void setUser(User? user) {
     _user = user;
@@ -27,6 +31,16 @@ class HomeScreenState extends ChangeNotifier {
 
   void setError(String? error) {
     _error = error;
+    notifyListeners();
+  }
+
+  void setPendingChatRequest(Map<String, dynamic> request) {
+    _pendingChatRequest = request;
+    notifyListeners();
+  }
+
+  void clearPendingChatRequest() {
+    _pendingChatRequest = null;
     notifyListeners();
   }
 
@@ -45,6 +59,19 @@ class HomeScreenState extends ChangeNotifier {
     _chats
       ..clear()
       ..addAll(chats);
+    _sortChats();
+    notifyListeners();
+  }
+
+  void addOrUpdateChat(ChatModel chat) {
+    final existingIndex = _chats.indexWhere(
+      (item) => item.chatId == chat.chatId,
+    );
+    if (existingIndex == -1) {
+      _chats.add(chat);
+    } else {
+      _chats[existingIndex] = chat;
+    }
     _sortChats();
     notifyListeners();
   }
@@ -146,6 +173,7 @@ class HomeScreenState extends ChangeNotifier {
 
   void reset() {
     _error = null;
+    _pendingChatRequest = null;
     _chats.clear();
     notifyListeners();
   }

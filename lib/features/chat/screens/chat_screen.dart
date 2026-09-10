@@ -59,8 +59,6 @@ class _ChatScreenState extends State<ChatScreen> {
     final isOnline = chatState.isOnline(args!.chatUserId);
     final lastSeen = chatState.lastSeen(args!.chatUserId);
 
-    print("$isTyping, $isOnline, $lastSeen");
-
     String statusText;
     if (isTyping) {
       statusText = 'Typing...';
@@ -95,6 +93,16 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         body: Column(
           children: [
+            if (chatState.error != null)
+              Container(
+                width: double.infinity,
+                color: Colors.red.shade50,
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  chatState.error!,
+                  style: TextStyle(color: Colors.red.shade800),
+                ),
+              ),
             BuildMessages(chatId: args!.chatId),
             BuildSendMessage(
               chatId: args!.chatId,
