@@ -50,7 +50,7 @@ class ChatModel {
     return ChatModel(
       json["id"] ?? json["_id"] ?? " ",
       json["userName"] ?? " ",
-      json["profilePic"] ?? " ",
+      json["profilePic"] ?? "https://kommodo.ai/i/xi25aAbWO64m1gFSXsim",
       json["receiverId"] ?? json["_id"] ?? " ",
       json["preview"] ?? " ",
       lastUpdateValue is String
